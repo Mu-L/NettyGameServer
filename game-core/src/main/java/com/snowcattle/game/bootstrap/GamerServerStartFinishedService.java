@@ -1,5 +1,6 @@
 package com.snowcattle.game.bootstrap;
 
+import org.springframework.stereotype.Component;
 import com.snowcattle.game.common.constant.Loggers;
 import com.snowcattle.game.common.constant.ServiceName;
 import com.snowcattle.game.common.util.ThreadPool;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
  * Created by jiangwenping on 17/3/13.
  * 服务器启动结束服务
  */
+@Component
 public class GamerServerStartFinishedService implements IService{
 
     private final Logger logger = Loggers.serverLogger;

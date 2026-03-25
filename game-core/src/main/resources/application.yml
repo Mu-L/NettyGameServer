@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: netty-game-server
+  main:
+    allow-bean-definition-overriding: true
+
+# 配置日志
+logging:
+  level:
+    com.snowcattle.game: DEBUG
+    root: DEBUG
+
+# 配置服务器端口，避免与游戏服务器端口冲突
+server:
+  port: 8080
+
+# 游戏服务器配置
+game:
+  server:
+    config-file: game_server.cfg.js

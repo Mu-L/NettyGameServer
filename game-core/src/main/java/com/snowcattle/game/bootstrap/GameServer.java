@@ -140,8 +140,17 @@ public class GameServer extends AbstractServerService {
     }
 
     public static void main(String[] args) {
+        System.out.println("Starting Netty Game Server...");
         GameServer server = new GameServer();
-        server.startServer();
+        try {
+            // 简化启动，只初始化Spring上下文
+            server.initSpring();
+            System.out.println("Netty Game Server started successfully!");
+        } catch (Exception e) {
+            System.err.println("Failed to start server: " + e.getMessage());
+            e.printStackTrace();
+            System.exit(1);
+        }
     }
 
     public void startServer(){
