@@ -9,6 +9,7 @@ import com.snowcattle.game.bootstrap.manager.GlobalManager;
 import com.snowcattle.game.bootstrap.manager.ServerServiceManager;
 import com.snowcattle.game.service.net.LocalNetService;
 import org.slf4j.Logger;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
@@ -53,6 +54,7 @@ public class GameServer extends AbstractServerService {
 
     protected GlobalManager globalManager;
     protected LocalNetService localNetService;
+    private ConfigurableApplicationContext applicationContext;
 
     /**
      * @param
@@ -78,8 +80,13 @@ public class GameServer extends AbstractServerService {
         this.initServer();
     }
 
-    public void initSpring()throws Exception{
-        ClassPathXmlApplicationContext classPathXmlApplicationContext = new ClassPathXmlApplicationContext(new String[]{"bean/*.xml"});
+    public void initSpring() throws Exception {
+        if (applicationContext != null) {
+            logger.info("Reuse Spring context from Spring Boot");
+            return;
+        }
+        ClassPathXmlApplicationContext classPathXmlApplicationContext = new ClassPathXmlApplicationContext(new String[]{"classpath*:bean/*.xml"});
+        this.applicationContext = classPathXmlApplicationContext;
         Runtime.getRuntime().addShutdownHook(new Thread(new ShutdownHook(classPathXmlApplicationContext)));
     }
 
@@ -140,17 +147,7 @@ public class GameServer extends AbstractServerService {
     }
 
     public static void main(String[] args) {
-        System.out.println("Starting Netty Game Server...");
-        GameServer server = new GameServer();
-        try {
-            // 简化启动，只初始化Spring上下文
-            server.initSpring();
-            System.out.println("Netty Game Server started successfully!");
-        } catch (Exception e) {
-            System.err.println("Failed to start server: " + e.getMessage());
-            e.printStackTrace();
-            System.exit(1);
-        }
+        GameServerBootApplication.main(args);
     }
 
     public void startServer(){
@@ -188,5 +185,9 @@ public class GameServer extends AbstractServerService {
 
     public void setLocalNetService(LocalNetService localNetService) {
         this.localNetService = localNetService;
+    }
+
+    public void setApplicationContext(ConfigurableApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
     }
 }

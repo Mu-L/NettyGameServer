@@ -9,6 +9,7 @@ import com.snowcattle.game.db.common.Loggers;
 import com.snowcattle.game.db.entity.IEntity;
 import com.snowcattle.game.db.util.*;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -33,6 +34,7 @@ public class RedisService{
 	/**
 	 * 设置连接池
 	 */
+	@Autowired
 	public void setJedisPool(JedisPool jedisPool) {
 		this.jedisPool = jedisPool;
 	}

@@ -1,20 +1,39 @@
 spring:
-  application:
-    name: netty-game-server
   main:
-    allow-bean-definition-overriding: true
+    web-application-type: none
 
-# 配置日志
-logging:
-  level:
-    com.snowcattle.game: DEBUG
-    root: DEBUG
-
-# 配置服务器端口，避免与游戏服务器端口冲突
-server:
-  port: 8080
-
-# 游戏服务器配置
 game:
-  server:
-    config-file: game_server.cfg.js
+  db:
+    id: 1
+    async-save-worker-size: 1
+    async-select-worker-size: 1
+    async-operation-package-name: com.snowcattle.game.db
+    sharding:
+      db-count: 3
+      table-count: 2
+      data-source-prefix: jdbc_player_db
+      page-limit: 50
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    db0:
+      url: jdbc:mysql://192.168.0.211:3306/db_0?useUnicode=true&characterEncoding=utf8
+      username: root
+      password: 123456
+    db1:
+      url: jdbc:mysql://192.168.0.211:3306/db_1?useUnicode=true&characterEncoding=utf8
+      username: root
+      password: 123456
+    db2:
+      url: jdbc:mysql://192.168.0.211:3306/db_2?useUnicode=true&characterEncoding=utf8
+      username: root
+      password: 123456
+  redis:
+    host: 192.168.0.136
+    port: 7000
+    timeout-ms: 3000
+    pool:
+      max-idle: 30
+      test-while-idle: true
+      time-between-eviction-runs-millis: 60000
+      num-tests-per-eviction-run: 30
+      min-evictable-idle-time-millis: 60000

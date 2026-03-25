@@ -36,7 +36,7 @@ public final class GameRoomHttpClientProBuf {
     private RoomHeartHttpClientProBuf() {
     }
 
-    @java.lang.Override
+    @Override
     public final com.google.protobuf.UnknownFieldSet
     getUnknownFields() {
       return this.unknownFields;
@@ -77,14 +77,14 @@ public final class GameRoomHttpClientProBuf {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.internal_static_RoomHeartHttpClientProBuf_descriptor;
+      return GameRoomHttpClientProBuf.internal_static_RoomHeartHttpClientProBuf_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    protected FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.internal_static_RoomHeartHttpClientProBuf_fieldAccessorTable
+      return GameRoomHttpClientProBuf.internal_static_RoomHeartHttpClientProBuf_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.RoomHeartHttpClientProBuf.class, com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.RoomHeartHttpClientProBuf.Builder.class);
+              RoomHeartHttpClientProBuf.class, Builder.class);
     }
 
     private byte memoizedIsInitialized = -1;
@@ -113,22 +113,22 @@ public final class GameRoomHttpClientProBuf {
     }
 
     private static final long serialVersionUID = 0L;
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
+    @Override
+    public boolean equals(final Object obj) {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.RoomHeartHttpClientProBuf)) {
+      if (!(obj instanceof RoomHeartHttpClientProBuf)) {
         return super.equals(obj);
       }
-      com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.RoomHeartHttpClientProBuf other = (com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.RoomHeartHttpClientProBuf) obj;
+      RoomHeartHttpClientProBuf other = (RoomHeartHttpClientProBuf) obj;
 
       boolean result = true;
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
 
-    @java.lang.Override
+    @Override
     public int hashCode() {
       if (memoizedHashCode != 0) {
         return memoizedHashCode;
@@ -140,58 +140,58 @@ public final class GameRoomHttpClientProBuf {
       return hash;
     }
 
-    public static com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.RoomHeartHttpClientProBuf parseFrom(
+    public static RoomHeartHttpClientProBuf parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.RoomHeartHttpClientProBuf parseFrom(
+    public static RoomHeartHttpClientProBuf parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.RoomHeartHttpClientProBuf parseFrom(byte[] data)
+    public static RoomHeartHttpClientProBuf parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.RoomHeartHttpClientProBuf parseFrom(
+    public static RoomHeartHttpClientProBuf parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.RoomHeartHttpClientProBuf parseFrom(java.io.InputStream input)
+    public static RoomHeartHttpClientProBuf parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.RoomHeartHttpClientProBuf parseFrom(
+    public static RoomHeartHttpClientProBuf parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.RoomHeartHttpClientProBuf parseDelimitedFrom(java.io.InputStream input)
+    public static RoomHeartHttpClientProBuf parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.RoomHeartHttpClientProBuf parseDelimitedFrom(
+    public static RoomHeartHttpClientProBuf parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.RoomHeartHttpClientProBuf parseFrom(
+    public static RoomHeartHttpClientProBuf parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.RoomHeartHttpClientProBuf parseFrom(
+    public static RoomHeartHttpClientProBuf parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -203,7 +203,7 @@ public final class GameRoomHttpClientProBuf {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.RoomHeartHttpClientProBuf prototype) {
+    public static Builder newBuilder(RoomHeartHttpClientProBuf prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -211,9 +211,9 @@ public final class GameRoomHttpClientProBuf {
           ? new Builder() : new Builder().mergeFrom(this);
     }
 
-    @java.lang.Override
+    @Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -227,17 +227,17 @@ public final class GameRoomHttpClientProBuf {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:RoomHeartHttpClientProBuf)
-        com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.RoomHeartHttpClientProBufOrBuilder {
+        RoomHeartHttpClientProBufOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.internal_static_RoomHeartHttpClientProBuf_descriptor;
+        return GameRoomHttpClientProBuf.internal_static_RoomHeartHttpClientProBuf_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      protected FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.internal_static_RoomHeartHttpClientProBuf_fieldAccessorTable
+        return GameRoomHttpClientProBuf.internal_static_RoomHeartHttpClientProBuf_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.RoomHeartHttpClientProBuf.class, com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.RoomHeartHttpClientProBuf.Builder.class);
+                RoomHeartHttpClientProBuf.class, Builder.class);
       }
 
       // Construct using com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.RoomHeartHttpClientProBuf.newBuilder()
@@ -246,7 +246,7 @@ public final class GameRoomHttpClientProBuf {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -262,23 +262,23 @@ public final class GameRoomHttpClientProBuf {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.internal_static_RoomHeartHttpClientProBuf_descriptor;
+        return GameRoomHttpClientProBuf.internal_static_RoomHeartHttpClientProBuf_descriptor;
       }
 
-      public com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.RoomHeartHttpClientProBuf getDefaultInstanceForType() {
-        return com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.RoomHeartHttpClientProBuf.getDefaultInstance();
+      public RoomHeartHttpClientProBuf getDefaultInstanceForType() {
+        return RoomHeartHttpClientProBuf.getDefaultInstance();
       }
 
-      public com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.RoomHeartHttpClientProBuf build() {
-        com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.RoomHeartHttpClientProBuf result = buildPartial();
+      public RoomHeartHttpClientProBuf build() {
+        RoomHeartHttpClientProBuf result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.RoomHeartHttpClientProBuf buildPartial() {
-        com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.RoomHeartHttpClientProBuf result = new com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.RoomHeartHttpClientProBuf(this);
+      public RoomHeartHttpClientProBuf buildPartial() {
+        RoomHeartHttpClientProBuf result = new RoomHeartHttpClientProBuf(this);
         onBuilt();
         return result;
       }
@@ -310,16 +310,16 @@ public final class GameRoomHttpClientProBuf {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.RoomHeartHttpClientProBuf) {
-          return mergeFrom((com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.RoomHeartHttpClientProBuf)other);
+        if (other instanceof RoomHeartHttpClientProBuf) {
+          return mergeFrom((RoomHeartHttpClientProBuf)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.RoomHeartHttpClientProBuf other) {
-        if (other == com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.RoomHeartHttpClientProBuf.getDefaultInstance()) return this;
+      public Builder mergeFrom(RoomHeartHttpClientProBuf other) {
+        if (other == RoomHeartHttpClientProBuf.getDefaultInstance()) return this;
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -333,11 +333,11 @@ public final class GameRoomHttpClientProBuf {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.RoomHeartHttpClientProBuf parsedMessage = null;
+        RoomHeartHttpClientProBuf parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.RoomHeartHttpClientProBuf) e.getUnfinishedMessage();
+          parsedMessage = (RoomHeartHttpClientProBuf) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -361,16 +361,16 @@ public final class GameRoomHttpClientProBuf {
     }
 
     // @@protoc_insertion_point(class_scope:RoomHeartHttpClientProBuf)
-    private static final com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.RoomHeartHttpClientProBuf DEFAULT_INSTANCE;
+    private static final RoomHeartHttpClientProBuf DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.RoomHeartHttpClientProBuf();
+      DEFAULT_INSTANCE = new RoomHeartHttpClientProBuf();
     }
 
-    public static com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.RoomHeartHttpClientProBuf getDefaultInstance() {
+    public static RoomHeartHttpClientProBuf getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<RoomHeartHttpClientProBuf>
+    @Deprecated public static final com.google.protobuf.Parser<RoomHeartHttpClientProBuf>
         PARSER = new com.google.protobuf.AbstractParser<RoomHeartHttpClientProBuf>() {
       public RoomHeartHttpClientProBuf parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
@@ -384,12 +384,12 @@ public final class GameRoomHttpClientProBuf {
       return PARSER;
     }
 
-    @java.lang.Override
+    @Override
     public com.google.protobuf.Parser<RoomHeartHttpClientProBuf> getParserForType() {
       return PARSER;
     }
 
-    public com.snowcattle.game.message.protogenerate.http.room.client.GameRoomHttpClientProBuf.RoomHeartHttpClientProBuf getDefaultInstanceForType() {
+    public RoomHeartHttpClientProBuf getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -397,7 +397,7 @@ public final class GameRoomHttpClientProBuf {
 
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_RoomHeartHttpClientProBuf_descriptor;
-  private static final 
+  private static final
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_RoomHeartHttpClientProBuf_fieldAccessorTable;
 
@@ -408,7 +408,7 @@ public final class GameRoomHttpClientProBuf {
   private static  com.google.protobuf.Descriptors.FileDescriptor
       descriptor;
   static {
-    java.lang.String[] descriptorData = {
+    String[] descriptorData = {
       "\n\021http_client.proto\032\014common.proto\"\033\n\031Roo" +
       "mHeartHttpClientProBufBV\n:com.snowcattle" +
       ".game.message.protogenerate.http.room.cl" +
@@ -432,7 +432,7 @@ public final class GameRoomHttpClientProBuf {
     internal_static_RoomHeartHttpClientProBuf_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_RoomHeartHttpClientProBuf_descriptor,
-        new java.lang.String[] { });
+        new String[] { });
     com.snowcattle.game.message.protogenerate.common.GameCommonMessageProBuf.getDescriptor();
   }
 

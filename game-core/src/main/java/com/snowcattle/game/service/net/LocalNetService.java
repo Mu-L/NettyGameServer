@@ -1,6 +1,5 @@
 package com.snowcattle.game.service.net;
 
-import org.springframework.stereotype.Component;
 import com.snowcattle.game.common.config.GameServerConfig;
 import com.snowcattle.game.common.constant.GlobalConstants;
 import com.snowcattle.game.common.constant.Loggers;
@@ -42,7 +41,6 @@ import java.security.cert.CertificateException;
  * Created by jiangwenping on 17/2/15.
  * 本地网络服务
  */
-@Component
 public class LocalNetService implements IService{
 
     private final Logger serverLogger = Loggers.serverLogger;

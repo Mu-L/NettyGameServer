@@ -90,7 +90,7 @@ public final class Test {
         System.out.println(json);
         Map map1 = JSON.parseObject(json);
         for (Object o : map.entrySet()) {
-            Map.Entry<String,String> entry = (Map.Entry<String,String>)o;
+            Entry<String,String> entry = (Entry<String,String>)o;
             System.out.println(entry.getKey()+"--->"+entry.getValue());
         }
     }

@@ -5,8 +5,8 @@ package com.snowcattle.game.common.util;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
-import com.snowcattle.game.common.constant.Loggers;
-import org.slf4j.Logger;
+import org.apache.log4j.Logger;
+
 
 /**
  * This program generates a AES key, retrieves its raw bytes, and then
@@ -18,7 +18,7 @@ public final class AES {
 	private static final String AES = "AES";
 	private static final String CRYPT_KEY = "hsylgwk-20120101";
 
-	private static final Logger logger = Loggers.gameLogger;
+	private static final Logger logger = Logger.getLogger(AES.class);
 
 	private AES() {
 	}

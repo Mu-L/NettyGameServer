@@ -1,12 +1,9 @@
 package com.snowcattle.game.db.service.config;
 
-import org.springframework.stereotype.Service;
-
 /**
  * Created by jiangwenping on 17/4/6.
  * db的配置
  */
-@Service
 public class DbConfig {
 
     /**

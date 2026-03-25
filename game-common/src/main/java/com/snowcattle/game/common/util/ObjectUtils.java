@@ -105,7 +105,7 @@ public final class ObjectUtils {
 
     public static Map<String, String> getTransferMap(Map<String, Object> map){
         Map<String, String> transferMap = new HashMap<>();
-        for(Map.Entry<String, Object> entry: map.entrySet()){
+        for(Entry<String, Object> entry: map.entrySet()){
             transferMap.put(entry.getKey(), getObjectString(entry.getValue()));
         }
         return transferMap;

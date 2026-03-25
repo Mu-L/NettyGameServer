@@ -1,6 +1,5 @@
 package com.snowcattle.game.bootstrap.manager;
 
-import org.springframework.stereotype.Component;
 import com.snowcattle.game.common.config.GameServerConfig;
 import com.snowcattle.game.common.constant.GlobalConstants;
 import com.snowcattle.game.common.util.BeanUtil;
@@ -33,7 +32,6 @@ import java.util.concurrent.TimeUnit;
  * Created by jiangwenping on 17/2/7.
  * 各种全局的业务管理器、公共服务实例的持有者，负责各种管理器的初始化和实例的获取
  */
-@Component
 public class GlobalManager {
 
     /**
