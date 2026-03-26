@@ -57,6 +57,8 @@ public class Tocken extends BaseStringIDEntity implements RedisInterface{
     }
 
     public EntityKeyShardingStrategyEnum getEntityKeyShardingStrategyEnum(){
-        return EntityKeyShardingStrategyEnum.ID;
+        // Tocken 的列表查询只按 userId 条件过滤（见 mybatis mapper），
+        // 此时 id 可能为 null；因此分片键应使用 userId，避免 NPE。
+        return EntityKeyShardingStrategyEnum.USER_ID;
     }
 }

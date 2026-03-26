@@ -49,7 +49,8 @@ public class DateFormatTest extends Thread {
         System.out.println(name + " : date: " + date);
     }
 
-    public static void main(String[] args) throws InterruptedException {
+    @org.junit.Test
+    public void legacyMain() throws InterruptedException  {
 
         ExecutorService executor = Executors.newCachedThreadPool();
 

@@ -15,7 +15,8 @@ public class SingleTest {
 
     private RpcProxyService rpcProxyService;
 
-    public static void main(String[] args) throws Exception {
+    @org.junit.Test
+    public void legacyMain() throws Exception  {
         SingleTest singleTest = new SingleTest();
         singleTest.init();
         singleTest.tps();

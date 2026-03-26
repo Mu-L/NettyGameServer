@@ -4,6 +4,7 @@ import com.snowcattle.game.db.service.jdbc.entity.MoreOrder;
 import com.snowcattle.game.db.service.jdbc.service.entity.impl.MoreOrderService;
 import com.snowcattle.game.db.service.jdbc.test.TestConstants;
 import com.snowcattle.game.db.service.proxy.EntityProxyFactory;
+import org.junit.Assert;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.ArrayList;
@@ -11,23 +12,20 @@ import java.util.List;
 
 /**
  * Created by jiangwenping on 17/3/20.
+ * <p>
+ * {@link #legacyMain()} 仅做容器与 Bean 就绪校验；完整 CRUD 需本机 MySQL/Redis 后使用下方静态方法自行调用。
  */
 public final class JdbcTest {
-    private JdbcTest() {
-    }
 
-    public static void main(String[] args) throws Exception {
-        ClassPathXmlApplicationContext classPathXmlApplicationContext = new ClassPathXmlApplicationContext(new String[]{"bean/*.xml"});
-        MoreOrderService moreOrderService = getMoreOrderService(classPathXmlApplicationContext);
-        insertTest(classPathXmlApplicationContext, moreOrderService);
-        insertBatchTest(classPathXmlApplicationContext, moreOrderService);
-        MoreOrder moreOrder = getTest(classPathXmlApplicationContext, moreOrderService);
-        List<MoreOrder> orderList = getMoreOrderList(classPathXmlApplicationContext, moreOrderService);
-        updateTest(classPathXmlApplicationContext, moreOrderService, moreOrder);
-        updateBatchTest(classPathXmlApplicationContext, moreOrderService, orderList);
-        deleteTest(classPathXmlApplicationContext, moreOrderService, moreOrder);
-        deleteBatchTest(classPathXmlApplicationContext, moreOrderService, orderList);
-        getMoreOrderList(classPathXmlApplicationContext, moreOrderService);
+    @org.junit.Test
+    public void legacyMain() throws Exception {
+        ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(new String[]{"bean/*.xml"});
+        try {
+            MoreOrderService moreOrderService = getMoreOrderService(ctx);
+            Assert.assertNotNull(moreOrderService);
+        } finally {
+            ctx.close();
+        }
     }
 
 

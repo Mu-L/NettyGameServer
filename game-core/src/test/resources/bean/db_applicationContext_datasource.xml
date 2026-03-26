@@ -2,6 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
 						http://www.springframework.org/schema/beans/spring-beans.xsd
 
@@ -9,8 +10,12 @@
 
 
 						http://www.springframework.org/schema/tx
-						http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+						http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+						http://www.springframework.org/schema/context
+						http://www.springframework.org/schema/context/spring-context.xsd">
 
+
+    <context:property-placeholder location="classpath:game-spring-xml-placeholder.properties" />
 
     <tx:annotation-driven/>
 
@@ -29,8 +34,11 @@
         </constructor-arg>
     </bean>
 
+    <bean id="mysqlDatabaseIdProvider" class="com.snowcattle.game.db.service.config.StaticMysqlDatabaseIdProvider" />
+
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="dynamicDataSource" />
+        <property name="databaseIdProvider" ref="mysqlDatabaseIdProvider"/>
         <property name="typeAliasesPackage" value="com.snowcattle.game.jdbc.entity"/>
         <property name="typeHandlersPackage" value="com.snowcattle.game.jdbc"/>
         <property name="configLocation"  value="classpath:mybatis3/sqlMapConfig.xml"/>
@@ -85,24 +93,24 @@
     </bean>
 
     <bean id="jdbc_player_db0" parent="parent_datasource">
-        <property name="driverClassName" value="${jdbc-driver}" />
-        <property name="url" value="${jdbc-url-0}" />
-        <property name="username" value="${jdbc-user-0}" />
-        <property name="password" value="${jdbc-password-0}" />
+        <property name="driverClassName" value="${game.datasource.driver-class-name}" />
+        <property name="url" value="${game.datasource.db0.url}" />
+        <property name="username" value="${game.datasource.db0.username}" />
+        <property name="password" value="${game.datasource.db0.password}" />
     </bean>
 
     <bean id="jdbc_player_db1" parent="parent_datasource">
-        <property name="driverClassName" value="${jdbc-driver}" />
-        <property name="url" value="${jdbc-url-1}" />
-        <property name="username" value="${jdbc-user-1}" />
-        <property name="password" value="${jdbc-password-1}" />
+        <property name="driverClassName" value="${game.datasource.driver-class-name}" />
+        <property name="url" value="${game.datasource.db1.url}" />
+        <property name="username" value="${game.datasource.db1.username}" />
+        <property name="password" value="${game.datasource.db1.password}" />
     </bean>
 
     <bean id="jdbc_player_db2" parent="parent_datasource">
-        <property name="driverClassName" value="${jdbc-driver}" />
-        <property name="url" value="${jdbc-url-2}" />
-        <property name="username" value="${jdbc-user-2}" />
-        <property name="password" value="${jdbc-password-2}" />
+        <property name="driverClassName" value="${game.datasource.driver-class-name}" />
+        <property name="url" value="${game.datasource.db2.url}" />
+        <property name="username" value="${game.datasource.db2.username}" />
+        <property name="password" value="${game.datasource.db2.password}" />
     </bean>
 
     <bean id="defaultEntityServiceShardingStrategy" class="com.snowcattle.game.db.sharding.EntityServiceShardingStrategy">

@@ -25,7 +25,8 @@ import java.net.URI;
 public final class GameHttpClient {
     //    static final String URL = System.getProperty("url", "http://127.0.0.1:8080/");
     static final String URL = System.getProperty("url", "http://127.0.0.1:10200/");
-    public static void main(String[] args) throws Exception {
+    @org.junit.Test
+    public void legacyMain() throws Exception  {
 
 
         TestStartUp.startUpWithSpring();

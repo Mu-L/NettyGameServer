@@ -6,7 +6,8 @@ import java.util.Arrays;
  * Created by jiangwenping on 2017/6/22.
  */
 public final class ArrayTest {
-    public static void main(String[] args) {
+    @org.junit.Test
+    public void legacyMain() {
         int a = Integer.valueOf("123");
         System.out.println(a);
 

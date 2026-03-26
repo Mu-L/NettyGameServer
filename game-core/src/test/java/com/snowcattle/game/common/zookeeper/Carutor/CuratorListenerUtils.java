@@ -18,7 +18,8 @@ import java.util.concurrent.Executors;
 public final class CuratorListenerUtils {
 
 	public static String connectString = "127.0.0.1:2181";
-	public static void main(String[] args) throws Exception {
+	@org.junit.Test
+    public void legacyMain() throws Exception  {
 		CuratorFramework client = creatClient();
 		setListenter(client);
 		setListenterThreeTwo(client);

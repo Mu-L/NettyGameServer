@@ -1,4 +1,4 @@
-package com.snowcattle.game.db.service.jdbc.mapper;
+package com.snowcattle.game.db.service.jdbc;
 
 import com.snowcattle.game.db.entity.IEntity;
 import org.apache.ibatis.session.RowBounds;
@@ -8,7 +8,7 @@ import java.util.Map;
 
 /**
  * Created by jiangwenping on 17/3/21.
- * 基础mapper
+ * 基础mapper（勿放在 mapper 扫描包下，否则会被 MapperScanner 误注册为 Mapper）
  */
 public interface IDBMapper<T extends IEntity> {
     public long insertEntity(T entity);

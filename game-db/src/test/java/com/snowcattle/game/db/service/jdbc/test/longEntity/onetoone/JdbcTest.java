@@ -4,6 +4,7 @@ import com.snowcattle.game.db.service.jdbc.entity.Order;
 import com.snowcattle.game.db.service.jdbc.service.entity.impl.OrderService;
 import com.snowcattle.game.db.service.jdbc.test.TestConstants;
 import com.snowcattle.game.db.service.proxy.EntityProxyFactory;
+import org.junit.Assert;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.ArrayList;
@@ -11,25 +12,21 @@ import java.util.List;
 
 /**
  * Created by jiangwenping on 17/3/20.
+ * <p>
+ * {@link #legacyMain()} 仅校验 Spring 与核心 Bean 可加载，不访问 MySQL/Redis，保证默认 {@code mvn test} 可通过。
+ * 需要跑完整 JDBC 流程时在本机启动 MySQL、Redis 后调用 {@link #insertTest}、{@link #filterList} 等静态方法自行编排。
  */
 public final class JdbcTest {
 
-    private JdbcTest() {
-    }
-
-    public static void main(String[] args) throws Exception {
-        ClassPathXmlApplicationContext classPathXmlApplicationContext = new ClassPathXmlApplicationContext(new String[]{"bean/*.xml"});
-        OrderService orderService = getOrderService(classPathXmlApplicationContext);
-//        insertTest(classPathXmlApplicationContext, orderService);
-//        insertBatchTest(classPathXmlApplicationContext, orderService);
-//        Order order = getTest(classPathXmlApplicationContext, orderService);
-//        List<Order> orderList = getOrderList(classPathXmlApplicationContext, orderService);
-        List<Order> orderList = filterList(classPathXmlApplicationContext, orderService);
-//        updateTest(classPathXmlApplicationContext, orderService, order);
-//        updateBatchTest(classPathXmlApplicationContext, orderService, orderList);
-//        deleteTest(classPathXmlApplicationContext, orderService, order);
-//        deleteBatchTest(classPathXmlApplicationContext, orderService, orderList);
-//        getOrderList(classPathXmlApplicationContext, orderService);
+    @org.junit.Test
+    public void legacyMain() throws Exception {
+        ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(new String[]{"bean/*.xml"});
+        try {
+            OrderService orderService = getOrderService(ctx);
+            Assert.assertNotNull(orderService);
+        } finally {
+            ctx.close();
+        }
     }
 
 

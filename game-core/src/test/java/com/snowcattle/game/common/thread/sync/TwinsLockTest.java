@@ -7,18 +7,19 @@ import java.util.concurrent.locks.Lock;
  */
 public final class TwinsLockTest {
 
-    public static void main(String[] args) {
+    @org.junit.Test
+    public void legacyMain() {
 //        final Lock lock = new TwinsLock();
         final Lock lock = new SingleLock();
         class Worker extends Thread {
             public void run() {
-                while (true) {
+                for (int round = 0; round < 3; round++) {
                     lock.lock();
 
                     try {
-                        Thread.sleep(1000L);
+                        Thread.sleep(100L);
                         System.out.println(Thread.currentThread());
-                        Thread.sleep(1000L);
+                        Thread.sleep(100L);
                     } catch (Exception ex) {
 
                     } finally {
@@ -34,8 +35,7 @@ public final class TwinsLockTest {
         }
 
         new Thread(() -> {
-            while (true) {
-
+            for (int i = 0; i < 30; i++) {
                 try {
                     Thread.sleep(200L);
                     System.out.println();
@@ -46,7 +46,7 @@ public final class TwinsLockTest {
         }).start();
 
         try {
-            Thread.sleep(20000L);
+            Thread.sleep(8000L);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

@@ -35,7 +35,8 @@ public final class HttpSnoopServer {
     static final boolean SSL = System.getProperty("ssl") != null;
     static final int PORT = Integer.parseInt(System.getProperty("port", SSL? "8443" : "8080"));
 
-    public static void main(String[] args) throws Exception {
+    @org.junit.Test
+    public void legacyMain() throws Exception  {
         // Configure SSL.
         final SslContext sslCtx;
         if (SSL) {

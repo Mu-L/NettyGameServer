@@ -16,7 +16,8 @@ import io.netty.handler.logging.LoggingHandler;
 
 public class GameClient {
 
-    public static void main(String[] args) throws Exception {
+    @org.junit.Test
+    public void legacyMain() throws Exception  {
         TestStartUp.startUpWithSpring();
 
         new GameClient().connect("127.0.0.1", 7090);

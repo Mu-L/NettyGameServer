@@ -20,7 +20,8 @@ public final class Test {
     private Test() {
     }
 
-    public static void main(String[] args) {
+    @org.junit.Test
+    public void legacyMain() {
         Foo f1 = new Foo();
         Date date = new Date();
         String text = JSON.toJSONString(date, mapping);

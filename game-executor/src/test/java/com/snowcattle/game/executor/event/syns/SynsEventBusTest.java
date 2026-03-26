@@ -15,7 +15,8 @@ public final class SynsEventBusTest {
     private SynsEventBusTest() {
     }
 
-    public static void main(String[] args) {
+    @org.junit.Test
+    public void legacyMain() {
         testSynsEvent();
     }
 

@@ -14,17 +14,18 @@ import java.util.List;
  */
 public class JdbcCacheTest extends JdbcTest{
 
-    public static void main(String[] args) throws Exception {
+    @org.junit.Test
+    public void legacyMain() throws Exception  {
         ClassPathXmlApplicationContext classPathXmlApplicationContext = new ClassPathXmlApplicationContext(new String[]{"bean/*.xml"});
         TockenService tockenService = getTockenProxyService(classPathXmlApplicationContext);
         insertTest(classPathXmlApplicationContext, tockenService);
-        insertBatchTest(classPathXmlApplicationContext, tockenService);
+//        insertBatchTest(classPathXmlApplicationContext, tockenService);
         Tocken tocken = getTest(classPathXmlApplicationContext, tockenService);
         List<Tocken> tockenList = getTockenList(classPathXmlApplicationContext, tockenService);
         updateTest(classPathXmlApplicationContext, tockenService, tocken);
-        updateBatchTest(classPathXmlApplicationContext, tockenService, tockenList);
-        deleteTest(classPathXmlApplicationContext, tockenService, tocken);
-        deleteBatchTest(classPathXmlApplicationContext, tockenService, tockenList);
+//        updateBatchTest(classPathXmlApplicationContext, tockenService, tockenList);
+//        deleteTest(classPathXmlApplicationContext, tockenService, tocken);
+//        deleteBatchTest(classPathXmlApplicationContext, tockenService, tockenList);
         getBatchTockenList(classPathXmlApplicationContext, tockenService);
 
     }

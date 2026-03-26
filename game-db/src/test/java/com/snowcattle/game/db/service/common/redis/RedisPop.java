@@ -18,7 +18,7 @@ public class RedisPop extends Thread{
 
     @Override
     public void run() {
-        while (true){
+        for (int poll = 0; poll < 500 && !Thread.currentThread().isInterrupted(); poll++) {
             String key = redisService.spopString(setKey);
             if(key != null) {
                 while (true) {
@@ -33,7 +33,8 @@ public class RedisPop extends Thread{
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Thread.currentThread().interrupt();
+                break;
             }
         }
     }

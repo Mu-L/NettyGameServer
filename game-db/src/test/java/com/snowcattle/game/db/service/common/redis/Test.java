@@ -8,7 +8,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * 这个可是用于测试 能否保证insert总是update执行，并且不丢sql数据
  */
 public final class Test {
-    public static void main(String[] args) {
+    @org.junit.Test
+    public void legacyMain() {
         ClassPathXmlApplicationContext classPathXmlApplicationContext = new ClassPathXmlApplicationContext(new String[]{"bean/*.xml"});
         RedisService redisService = (RedisService) classPathXmlApplicationContext.getBean("redisService");
         String setKey = "set";

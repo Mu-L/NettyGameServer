@@ -25,7 +25,8 @@ public final class EchoNettyUdpClient {
     private EchoNettyUdpClient() {
     }
 
-    public static void main(String[] args) throws Exception {
+    @org.junit.Test
+    public void legacyMain() throws Exception  {
         LocalSpringServiceManager localSpringServiceManager = new LocalSpringServiceManager();
         LocalMananger.getInstance().create(MessageRegistry.class, MessageRegistry.class);
         localSpringServiceManager.setMessageRegistry(LocalMananger.getInstance().get(MessageRegistry.class));
@@ -53,9 +54,8 @@ public final class EchoNettyUdpClient {
             }
         }));
 
-        while (true){
-            Thread.currentThread().sleep(100L);
-        }
+        Thread.sleep(500L);
+        nioEventLoopGroup.shutdownGracefully().sync();
     }
 
     public static void sendStringMessage(Channel udpChannel) throws InterruptedException {

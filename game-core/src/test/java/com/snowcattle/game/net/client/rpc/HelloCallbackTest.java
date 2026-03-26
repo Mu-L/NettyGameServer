@@ -21,7 +21,8 @@ public class HelloCallbackTest {
         rpcProxyService = (RpcProxyService) BeanUtil.getBean("rpcProxyService");
     }
 
-    public static void main(String[] args) throws Exception {
+    @org.junit.Test
+    public void legacyMain() throws Exception  {
         HelloCallbackTest helloCallbackTest = new HelloCallbackTest();
         helloCallbackTest.init();
         helloCallbackTest.test();

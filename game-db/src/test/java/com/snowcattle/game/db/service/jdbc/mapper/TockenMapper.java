@@ -1,5 +1,6 @@
 package com.snowcattle.game.db.service.jdbc.mapper;
 
+import com.snowcattle.game.db.service.jdbc.IDBMapper;
 import com.snowcattle.game.db.service.jdbc.entity.Tocken;
 
 /**

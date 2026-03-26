@@ -19,7 +19,8 @@ public final class AsyncUpdateBusTest {
     private AsyncUpdateBusTest() {
     }
 
-    public static void main(String[] args) throws Exception {
+    @org.junit.Test
+    public void legacyMain() throws Exception  {
         testUpdate();
     }
 
@@ -51,15 +52,10 @@ public final class AsyncUpdateBusTest {
             updateService.addReadyCreateEvent(cycleEvent);
         }
 
-//        while (true){
-//            Thread.currentThread().sleep(100);
-//            updateService.toString();
-//        }
-//        updateService.shutDown();
-        while (true) {
+        for (int i = 0; i < 30; i++) {
             Thread.sleep(100);
             System.out.println(updateService);
         }
-
+        updateService.stop();
     }
 }

@@ -11,7 +11,8 @@ public class ConditionTest {
 
     public ReentrantLock reentrantLock;
     public Condition condition;
-    public static void main(String[] args) throws InterruptedException {
+    @org.junit.Test
+    public void legacyMain() throws InterruptedException  {
         ConditionTest conditionTest = new ConditionTest();
         conditionTest.reentrantLock = new ReentrantLock();
         conditionTest.condition = conditionTest.reentrantLock.newCondition();

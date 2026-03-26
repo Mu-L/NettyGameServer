@@ -12,7 +12,8 @@ import java.util.List;
  * Created by jiangwenping on 17/5/9.
  */
 public final class DictServiceTest {
-    public static void main(String[] args) throws Exception {
+    @org.junit.Test
+    public void legacyMain() throws Exception  {
         TestStartUp.startUpWithSpring();
         DictService dictService = LocalMananger.getInstance().getLocalSpringServiceManager().getDictService();
         String dictModleType= "BULLET_BULLET";

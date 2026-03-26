@@ -14,7 +14,8 @@ import java.util.Arrays;
  */
 public final class NetMessageEncodeTest {
 
-    public static void main(String[] args) throws Exception{
+    @org.junit.Test
+    public void legacyMain() throws Exception {
         AbstractNetMessage abstractNetMessage = new OnlineHeartClientTcpMessage();
         NetMessageHead netMessageHead = new NetMessageHead();
         netMessageHead.setSerial(5);

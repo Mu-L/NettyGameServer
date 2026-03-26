@@ -15,7 +15,8 @@ public final class JdbcBatchOriginTest {
     private JdbcBatchOriginTest() {
     }
 
-    public static void main(String[] args) {
+    @org.junit.Test
+    public void legacyMain() {
        commonTest();
     }
 

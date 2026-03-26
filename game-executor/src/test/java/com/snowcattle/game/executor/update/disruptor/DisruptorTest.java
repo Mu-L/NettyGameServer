@@ -22,7 +22,8 @@ public final class DisruptorTest {
     private DisruptorTest() {
     }
 
-    public static void main(String[] args) throws Exception {
+    @org.junit.Test
+    public void legacyMain() throws Exception  {
         testUpdate();
     }
 
@@ -58,11 +59,10 @@ public final class DisruptorTest {
         }
 
 
-        while (true) {
+        for (int i = 0; i < 30; i++) {
             Thread.sleep(100);
             System.out.println(updateService);
         }
-
-//        updateService.stop();
+        updateService.stop();
     }
 }

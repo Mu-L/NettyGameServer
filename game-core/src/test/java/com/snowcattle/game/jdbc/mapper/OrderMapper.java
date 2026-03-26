@@ -2,7 +2,7 @@ package com.snowcattle.game.jdbc.mapper;
 
 
 
-import com.snowcattle.game.db.service.jdbc.mapper.IDBMapper;
+import com.snowcattle.game.db.service.jdbc.IDBMapper;
 import com.snowcattle.game.jdbc.entity.Order;
 
 /**

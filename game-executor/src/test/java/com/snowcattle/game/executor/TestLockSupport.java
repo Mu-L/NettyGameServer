@@ -9,7 +9,8 @@ public final class TestLockSupport {
     private TestLockSupport() {
     }
 
-    public static void main(String[] args) {
+    @org.junit.Test
+    public void legacyMain() {
 
 //        test();
         testCpu();
@@ -19,17 +20,17 @@ public final class TestLockSupport {
         long startTime = System.currentTimeMillis();
         System.out.println(System.currentTimeMillis());
         int number = 0;
-        while (true){
+        int prints = 0;
+        while (prints < 5) {
             LockSupport.unpark(Thread.currentThread());
-//            LockSupport.park();
             ++number;
             long currTime = System.currentTimeMillis();
             if(number % 10000 == 0) {
                 LockSupport.park();
                 System.out.println("运行次数" + number + "时间" + (currTime - startTime));
+                prints++;
             }
         }
-
     }
 
     public static void  test(){

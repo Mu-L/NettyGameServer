@@ -18,7 +18,8 @@ public class HelloServiceTest {
 
     private RpcProxyService rpcProxyService;
 
-    public static void main(String[] args) throws Exception {
+    @org.junit.Test
+    public void legacyMain() throws Exception  {
         HelloServiceTest helloServiceTest = new HelloServiceTest();
         helloServiceTest.init();
         helloServiceTest.helloTest1();

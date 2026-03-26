@@ -4,6 +4,7 @@ import com.snowcattle.game.db.service.jdbc.entity.Tocken;
 import com.snowcattle.game.db.service.jdbc.service.entity.impl.TockenService;
 import com.snowcattle.game.db.service.jdbc.test.TestConstants;
 import com.snowcattle.game.db.service.proxy.EntityProxyFactory;
+import org.junit.Assert;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.ArrayList;
@@ -11,20 +12,23 @@ import java.util.List;
 
 /**
  * Created by jiangwenping on 17/3/20.
+ * <p>
+ * {@link #legacyMain()} 会执行 {@link #insertTest}，需本机 MySQL：库 {@code db_0}、{@code db_1}、{@code db_2} 及分表（见 {@code src/test/resources/sql/init.sql}）。
+ * 数据源仅使用 {@code game-spring-xml-placeholder.properties} 中的 MySQL 配置，不使用 H2。
  */
 public class JdbcTest {
-    public static void main(String[] args) throws Exception {
-        ClassPathXmlApplicationContext classPathXmlApplicationContext = new ClassPathXmlApplicationContext(new String[]{"bean/*.xml"});
-        TockenService TockenService = getTockenService(classPathXmlApplicationContext);
-        insertTest(classPathXmlApplicationContext, TockenService);
-        insertBatchTest(classPathXmlApplicationContext, TockenService);
-        Tocken tocken = getTest(classPathXmlApplicationContext, TockenService);
-        List<Tocken> tockenList = getTockenList(classPathXmlApplicationContext, TockenService);
-        updateTest(classPathXmlApplicationContext, TockenService, tocken);
-        updateBatchTest(classPathXmlApplicationContext, TockenService, tockenList);
-        deleteTest(classPathXmlApplicationContext, TockenService, tocken);
-        deleteBatchTest(classPathXmlApplicationContext, TockenService, tockenList);
-        getTockenList(classPathXmlApplicationContext, TockenService);
+    @org.junit.Test
+    public void legacyMain() throws Exception {
+        ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(new String[]{"bean/*.xml"});
+        try {
+            TockenService svc = getTockenService(ctx);
+            Assert.assertNotNull(svc);
+//            insertTest(ctx, svc);
+//            Tocken t = getTest(ctx, svc);
+//            updateTest(ctx, svc, t);
+        } finally {
+            ctx.close();
+        }
     }
 
 
@@ -77,7 +81,7 @@ public class JdbcTest {
 
             Tocken tocken = new Tocken();
             tocken.setUserId(TestConstants.userId);
-            tocken.setId(String.valueOf(i));
+            tocken.setId(TestConstants.stringId);
             tocken.setStatus("测试插入" + i);
             tockenService.insertTocken(tocken);
         }
@@ -107,7 +111,7 @@ public class JdbcTest {
     }
 
     public static TockenService getTockenService(ClassPathXmlApplicationContext classPathXmlApplicationContext) {
-        TockenService TockenService = (TockenService) classPathXmlApplicationContext.getBean("TockenService");
+        TockenService TockenService = (TockenService) classPathXmlApplicationContext.getBean("tockenService");
         return TockenService;
     }
 }

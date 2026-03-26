@@ -9,7 +9,7 @@ import com.snowcattle.game.db.entity.AbstractEntity;
 import com.snowcattle.game.db.entity.BaseLongIDEntity;
 import com.snowcattle.game.db.entity.BaseStringIDEntity;
 import com.snowcattle.game.db.entity.IEntity;
-import com.snowcattle.game.db.service.jdbc.mapper.IDBMapper;
+import com.snowcattle.game.db.service.jdbc.IDBMapper;
 import com.snowcattle.game.db.service.proxy.EntityProxyWrapper;
 import com.snowcattle.game.db.sharding.CustomerContextHolder;
 import com.snowcattle.game.db.sharding.EntityServiceShardingStrategy;
@@ -223,10 +223,18 @@ public abstract class EntityService<T extends AbstractEntity> implements IEntity
         if (entity.getEntityKeyShardingStrategyEnum() == EntityKeyShardingStrategyEnum.ID) {
             if(entity instanceof BaseLongIDEntity) {
                 BaseLongIDEntity baseLongIDEntity = (BaseLongIDEntity) entity;
-                shardingId = baseLongIDEntity.getId();
+                // ID 可能为 null（例如只按 userId 查询的场景），兜底使用 userId，避免 NPE。
+                Long id = baseLongIDEntity.getId();
+                if (id != null) {
+                    shardingId = id;
+                }
             }else if(entity instanceof BaseStringIDEntity){
                 BaseStringIDEntity baseStringIDEntity = (BaseStringIDEntity)entity;
-                shardingId = baseStringIDEntity.getId().hashCode();
+                String id = baseStringIDEntity.getId();
+                // ID 可能为 null（例如只按 userId 查询的场景），兜底使用 userId，避免 NPE。
+                if (id != null) {
+                    shardingId = id.hashCode();
+                }
             }
         }
         return shardingId;

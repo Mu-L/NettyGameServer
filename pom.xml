@@ -46,7 +46,8 @@
     <velocity.version>1.7</velocity.version>
     <mybatis.version>3.2.2</mybatis.version>
     <mybatis-spring.version>1.2.0</mybatis-spring.version>
-    <mysql.version>5.1.30</mysql.version>
+    <!-- 8.x 兼容 MySQL 5.7/8.0；5.1.x 连 MySQL 8 常因认证/SSL 失败 -->
+    <mysql.version>8.0.33</mysql.version>
     <commons.dbcp.version>1.4</commons.dbcp.version>
     <commons-beanutils.version>1.9.3</commons-beanutils.version>
     <redis-game-transaction.version>1.8.010</redis-game-transaction.version>
@@ -54,6 +55,7 @@
     <pagehelper.version>5.0.0</pagehelper.version>
     <project.build.directory>target/classes/com</project.build.directory>
     <spring-boot.version>2.1.18.RELEASE</spring-boot.version>
+    <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
   </properties>
 
   <repositories>
@@ -286,6 +288,23 @@
   </dependencies>
 
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${maven-surefire-plugin.version}</version>
+          <configuration>
+            <!-- 项目里大量 *Test 类是带 main 的示例程序，不含 @Test；显式包含常见 JUnit4 命名，并配合各模块 BuildSmokeTest -->
+            <includes>
+              <include>**/*Test.java</include>
+              <include>**/*Tests.java</include>
+              <include>**/Test*.java</include>
+            </includes>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
 
     <resources>
       <!-- 先指定 src/main/resources下所有文件及文件夹为资源文件 -->
@@ -298,6 +317,10 @@
     </resources>
 
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>

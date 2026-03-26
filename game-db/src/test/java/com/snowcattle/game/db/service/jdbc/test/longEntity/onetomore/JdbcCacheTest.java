@@ -15,7 +15,8 @@ import java.util.List;
  */
 public class JdbcCacheTest {
 
-    public static void main(String[] args) throws Exception {
+    @org.junit.Test
+    public void legacyMain() throws Exception  {
         ClassPathXmlApplicationContext classPathXmlApplicationContext = new ClassPathXmlApplicationContext(new String[]{"bean/*.xml"});
         MoreOrderService moreOrderService = getMoreOrderProxyService(classPathXmlApplicationContext);
         insertTest(classPathXmlApplicationContext, moreOrderService);

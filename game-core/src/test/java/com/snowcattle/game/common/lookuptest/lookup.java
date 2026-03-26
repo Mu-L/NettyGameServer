@@ -12,7 +12,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class lookup {
 
-    public static void main(String[] args) {
+    @org.junit.Test
+    public void legacyMain() {
         ConcurrentHashMap<String, String> sessions = new ConcurrentHashMap<String, String>();
         String t = "123";
         sessions.put(t, t);

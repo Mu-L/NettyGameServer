@@ -23,7 +23,8 @@ public class ZookeeperTest {
 
     private ZookeeperRpcServiceDiscovery zookeeperRpcServiceDiscovery;
 
-    public static void main(String[] args) throws Exception {
+    @org.junit.Test
+    public void legacyMain() throws Exception  {
         ZookeeperTest zookeeperTest = new ZookeeperTest();
         zookeeperTest.init();
         zookeeperTest.test();

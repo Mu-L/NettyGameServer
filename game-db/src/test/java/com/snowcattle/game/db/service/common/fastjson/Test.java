@@ -19,7 +19,8 @@ public class Test {
         this.status = status;
     }
 
-    public static void main(String[] args) {
+    @org.junit.Test
+    public void legacyMain() {
         SerializeConfig config=new SerializeConfig();
 //        config.put(Status.class, new StatusSerializer());
         Test test = new Test();

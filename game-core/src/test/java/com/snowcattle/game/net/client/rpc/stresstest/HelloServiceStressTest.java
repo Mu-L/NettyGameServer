@@ -19,7 +19,8 @@ public class HelloServiceStressTest {
     private RpcProxyService rpcProxyService;
 
 
-    public static void main(String[] args) throws Exception {
+    @org.junit.Test
+    public void legacyMain() throws Exception  {
         HelloServiceStressTest helloServiceStressTest = new HelloServiceStressTest();
         helloServiceStressTest.init();
         helloServiceStressTest.helloTest1();

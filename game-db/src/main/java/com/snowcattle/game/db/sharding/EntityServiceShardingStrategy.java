@@ -37,7 +37,7 @@ public class EntityServiceShardingStrategy {
         if(!openSharding){
             return dataSource;
         }
-        long dbIndex = userId % dbCount;
+        long dbIndex = Math.floorMod(userId, dbCount);
         return dataSource+ dbIndex;
     }
 
@@ -45,7 +45,7 @@ public class EntityServiceShardingStrategy {
         if(!openSharding){
             return 0;
         }
-        return (int) (userId%tableCount);
+        return (int) Math.floorMod(userId, (long) tableCount);
     }
 
     public int getDbCount() {

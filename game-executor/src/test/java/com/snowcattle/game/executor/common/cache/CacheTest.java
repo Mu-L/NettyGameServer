@@ -17,7 +17,8 @@ import java.util.concurrent.TimeUnit;
  * Created by jiangwenping on 17/4/26.
  */
 public final class CacheTest {
-    public static void main(String[] args) throws Exception {
+    @org.junit.Test
+    public void legacyMain() throws Exception  {
         EventBus updateEventBus = new EventBus();
         int maxSize = 1;
         int corePoolSize = 1;
@@ -51,10 +52,11 @@ public final class CacheTest {
 
         }
 
-        while (true) {
+        for (int i = 0; i < 20; i++) {
             Thread.sleep(100);
             System.out.println(updateService);
         }
+        updateService.stop();
     }
 
 }

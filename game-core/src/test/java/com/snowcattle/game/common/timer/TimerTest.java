@@ -7,7 +7,8 @@ import java.util.TimerTask;
  * Created by jiangwenping on 17/3/27.
  */
 public final class TimerTest {
-    public static void main(String[] args) {
+    @org.junit.Test
+    public void legacyMain() {
         Timer timer = new Timer();
         timer.schedule(new TestTimeTask(), 0, 10);
     }

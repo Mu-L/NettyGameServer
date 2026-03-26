@@ -8,7 +8,8 @@ import com.snowcattle.game.db.service.jdbc.entity.Order;
  */
 public final class ObjectTest {
 
-    public static void main(String[] args) throws InterruptedException {
+    @org.junit.Test
+    public void legacyMain() throws InterruptedException  {
         int maxSize = 1000000;
         AbstractEntity[] abstractEntity = new AbstractEntity[maxSize];
         for(int i = 0; i < 1000000; i++){

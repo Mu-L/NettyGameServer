@@ -7,7 +7,8 @@ import com.snowcattle.game.executor.event.service.AsyncEventService;
  * Created by jwp on 2017/5/5.
  */
 public final class AsyncEventServiceTest {
-    public static void main(String[] args) throws Exception {
+    @org.junit.Test
+    public void legacyMain() throws Exception  {
         EventBus eventBus = new EventBus();
 
         eventBus.addEventListener(new SingleRunEventListener());

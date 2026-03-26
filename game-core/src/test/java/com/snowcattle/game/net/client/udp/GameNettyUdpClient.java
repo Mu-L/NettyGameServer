@@ -28,7 +28,8 @@ public final class GameNettyUdpClient {
     private GameNettyUdpClient() {
     }
 
-    public static void main(String[] args) throws Exception {
+    @org.junit.Test
+    public void legacyMain() throws Exception  {
         TestStartUp.startUpWithSpring();
         LocalSpringServiceManager localSpringServiceManager = LocalMananger.getInstance().getLocalSpringServiceManager();
         localSpringServiceManager.setMessageRegistry(LocalMananger.getInstance().get(MessageRegistry.class));
@@ -54,9 +55,8 @@ public final class GameNettyUdpClient {
             }
         }));
 
-        while (true){
-            Thread.currentThread().sleep(100L);
-        }
+        Thread.sleep(500L);
+        nioEventLoopGroup.shutdownGracefully().sync();
     }
 
     public static void sendStringMessage(Channel udpChannel) throws InterruptedException {

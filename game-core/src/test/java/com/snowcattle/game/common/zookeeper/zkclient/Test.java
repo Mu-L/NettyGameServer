@@ -57,7 +57,8 @@ public class Test {
         zk.close();
     }
 
-    public static void main(String[] args) throws  Exception{
+    @org.junit.Test
+    public void legacyMain() throws  Exception {
         Test test = new Test();
         test.createZkServie();;
         test.operations();

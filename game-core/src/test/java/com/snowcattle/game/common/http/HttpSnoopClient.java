@@ -42,7 +42,8 @@ public final class HttpSnoopClient {
 
     static final String URL = System.getProperty("url", "http://127.0.0.1:8080/");
 //    static final String URL = System.getProperty("url", "http://127.0.0.1:10200/");
-    public static void main(String[] args) throws Exception {
+    @org.junit.Test
+    public void legacyMain() throws Exception  {
         URI uri = new URI(URL);
         String scheme = uri.getScheme() == null? "http" : uri.getScheme();
         String host = uri.getHost() == null? "127.0.0.1" : uri.getHost();

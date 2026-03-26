@@ -3,7 +3,8 @@ package com.snowcattle.game.common.zookeeper.zkclient;
 import org.I0Itec.zkclient.ZkClient;
 
 public final class ZookperTest {
-	public static void main(String[] args) {
+	@org.junit.Test
+    public void legacyMain() {
 		ZkClient zkClient = new ZkClient("127.0.0.1:2181");
 		String path = "/master123";
 		//创建节点

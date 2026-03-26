@@ -16,7 +16,8 @@ public final class CacheTest {
     private CacheTest() {
     }
 
-    public static void main(String[] args) throws Exception {
+    @org.junit.Test
+    public void legacyMain() throws Exception  {
         ClassPathXmlApplicationContext classPathXmlApplicationContext = new ClassPathXmlApplicationContext(new String[]{"bean/*.xml"});
         OrderService orderService = getOrderService(classPathXmlApplicationContext);
         SnowFlakeUUIDService snowFlakeUUIDService = (SnowFlakeUUIDService) classPathXmlApplicationContext.getBean("snowFlakeUUIDService");

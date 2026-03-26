@@ -5,7 +5,8 @@ package com.snowcattle.game.common.template;
  */
 public final class Test {
 
-    public static void main(String[] args) {
+    @org.junit.Test
+    public void legacyMain() {
 //        ChileTemplate<String> chileTemplate = new ChileTemplate<String>();
         ChileTemplate chileTemplate = new ChileTemplate();
         System.out.println(chileTemplate.getTClass(0));

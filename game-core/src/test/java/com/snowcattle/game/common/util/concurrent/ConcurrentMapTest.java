@@ -6,7 +6,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by jiangwenping on 2017/11/23.
  */
 public final class ConcurrentMapTest {
-    public static void main(String[] args) {
+    @org.junit.Test
+    public void legacyMain() {
         ConcurrentHashMap<Integer, Integer> hashMap = new ConcurrentHashMap<>();
         for(int i = 0; i< 1000; i++){
             Integer integer = hashMap.putIfAbsent(i, i);

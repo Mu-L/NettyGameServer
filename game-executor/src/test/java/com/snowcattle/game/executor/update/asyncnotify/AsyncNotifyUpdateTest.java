@@ -22,7 +22,8 @@ public final class AsyncNotifyUpdateTest {
     private AsyncNotifyUpdateTest() {
     }
 
-    public static void main(String[] args) throws Exception {
+    @org.junit.Test
+    public void legacyMain() throws Exception  {
         testUpdate();
     }
 
@@ -61,10 +62,11 @@ public final class AsyncNotifyUpdateTest {
 
         UpdateNotifyService updateNotifyService = new UpdateNotifyService(updateService, 10);
         updateNotifyService.startup();
-        while (true) {
+        for (int i = 0; i < 30; i++) {
             Thread.sleep(100);
             System.out.println(updateService);
         }
+        updateService.stop();
     }
 }
 

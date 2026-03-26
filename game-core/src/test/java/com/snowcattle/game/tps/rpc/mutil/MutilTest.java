@@ -19,7 +19,8 @@ public class MutilTest {
 
     private RpcProxyService rpcProxyService;
 
-    public static void main(String[] args) throws Exception {
+    @org.junit.Test
+    public void legacyMain() throws Exception  {
         MutilTest mutilTest = new MutilTest();
         mutilTest.init();
         mutilTest.tps();

@@ -4,7 +4,8 @@ package com.snowcattle.game.db.service.common.uuid;
  * Created by jiangwenping on 17/2/27.
  */
 public final class SnowflakeTest {
-    public static void main(String[] args) {
+    @org.junit.Test
+    public void legacyMain() {
         int node = 10;
         Snowflake snowflake = new Snowflake(node);
         System.out.println(snowflake.next());

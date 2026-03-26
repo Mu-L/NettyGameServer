@@ -15,7 +15,8 @@ import java.util.Map;
  * Created by jiangwenping on 17/4/6.
  */
 public final class TestWrapper {
-    public static void main(String[] args) throws Exception {
+    @org.junit.Test
+    public void legacyMain() throws Exception  {
         ClassPathXmlApplicationContext classPathXmlApplicationContext = new ClassPathXmlApplicationContext(new String[]{"bean/*.xml"});
         EntityProxyFactory entityProxyFactory = (EntityProxyFactory) classPathXmlApplicationContext.getBean("entityProxyFactory");
         Tocken tocken = new Tocken();

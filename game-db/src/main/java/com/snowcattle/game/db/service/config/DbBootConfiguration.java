@@ -146,6 +146,8 @@ public class DbBootConfiguration {
         sqlSessionFactoryBean.setDataSource(dynamicDataSource);
         sqlSessionFactoryBean.setTypeAliasesPackage("com.snowcattle.game.db.service.jdbc.entity");
         sqlSessionFactoryBean.setTypeHandlersPackage("com.snowcattle.game.db.service.jdbc.handler");
+        // 避免默认 VendorDatabaseIdProvider 在启动时 getConnection() 探测库类型（路由键未设置时会踩到空连接）
+        sqlSessionFactoryBean.setDatabaseIdProvider(new StaticMysqlDatabaseIdProvider());
         return sqlSessionFactoryBean;
     }
 

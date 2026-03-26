@@ -4,6 +4,7 @@ import com.snowcattle.game.db.service.redis.RedisService;
 import com.snowcattle.game.db.service.entity.EntityService;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cglib.proxy.Enhancer;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +18,8 @@ public class EntityServiceProxyFactory {
     @Autowired
     private RedisService redisService;
 
-    @Autowired(required = false)
-    private final boolean useRedisFlag = true;
+    @Value("${game.db.use-redis-flag:true}")
+    private boolean useRedisFlag;
 
     private EntityServiceProxy createProxy(EntityService EntityService){
         return new EntityServiceProxy<>(redisService, useRedisFlag);
@@ -45,5 +46,13 @@ public class EntityServiceProxyFactory {
 
     public void setRedisService(RedisService redisService) {
         this.redisService = redisService;
+    }
+
+    public boolean isUseRedisFlag() {
+        return useRedisFlag;
+    }
+
+    public void setUseRedisFlag(boolean useRedisFlag) {
+        this.useRedisFlag = useRedisFlag;
     }
 }

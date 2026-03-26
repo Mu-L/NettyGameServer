@@ -7,7 +7,8 @@ import com.snowcattle.game.bootstrap.GameServer;
  */
 public class GameServerEx extends GameServer{
 
-    public static void main(String[] args) {
+    @org.junit.Test
+    public void legacyMain() {
         GameServerEx gameServerEx = new GameServerEx();
         GlobalManagerEx globalManagerEx = new GlobalManagerEx();
         gameServerEx.setGlobalManager(globalManagerEx);

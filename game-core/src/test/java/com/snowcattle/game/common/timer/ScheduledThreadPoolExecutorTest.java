@@ -13,8 +13,8 @@ public final class ScheduledThreadPoolExecutorTest
 {
     private static long start;
 
-    public static void main(String[] args)
-    {
+    @org.junit.Test
+    public void legacyMain() {
         ScheduledExecutorService newScheduledThreadPool = Executors
                 .newScheduledThreadPool(2);
 

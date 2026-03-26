@@ -5,7 +5,6 @@ import com.snowcattle.game.bootstrap.manager.LocalMananger;
 import com.snowcattle.game.bootstrap.manager.spring.LocalSpringServiceManager;
 import com.snowcattle.game.service.message.registry.MessageRegistry;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
@@ -21,8 +20,6 @@ import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.net.URI;
 
 /**
@@ -33,7 +30,8 @@ public final class GameWebSocketClient {
 //    static final String URL = System.getProperty("url", "ws://127.0.0.1:8080/websocket");
 //    static final String URL = System.getProperty("url", "ws://127.0.0.1:10300/websocket");
     static final String URL = System.getProperty("url", "wss://127.0.0.1:10300/websocket");
-    public static void main(String[] args) throws Exception {
+    @org.junit.Test
+    public void legacyMain() throws Exception  {
 
         TestStartUp.startUpWithSpring();
         LocalSpringServiceManager localSpringServiceManager = LocalMananger.getInstance().getLocalSpringServiceManager();
@@ -100,23 +98,10 @@ public final class GameWebSocketClient {
             Channel ch = b.connect(uri.getHost(), port).sync().channel();
             handler.handshakeFuture().sync();
 
-            BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
-            while (true) {
-                String msg = console.readLine();
-                if (msg == null) {
-                    break;
-                } else if ("bye".equals(msg.toLowerCase())) {
-                    ch.writeAndFlush(new CloseWebSocketFrame());
-                    ch.closeFuture().sync();
-                    break;
-                } else if ("ping".equals(msg.toLowerCase())) {
-                    WebSocketFrame frame = new PingWebSocketFrame(Unpooled.wrappedBuffer(new byte[]{8, 1, 8, 1}));
-                    ch.writeAndFlush(frame);
-                } else {
-                    WebSocketFrame frame = new TextWebSocketFrame(msg);
-                    ch.writeAndFlush(frame);
-                }
-            }
+            ch.writeAndFlush(new TextWebSocketFrame("test"));
+            Thread.sleep(200L);
+            ch.writeAndFlush(new CloseWebSocketFrame());
+            ch.closeFuture().sync();
         } finally {
             group.shutdownGracefully();
         }

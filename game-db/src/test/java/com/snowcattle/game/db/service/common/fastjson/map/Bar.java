@@ -24,7 +24,8 @@ public class Bar {
         barAge = r.nextInt();
     }
 
-    public static void main(String[] args) {
+    @org.junit.Test
+    public void legacyMain() {
         Object obj = JSON.toJSON(new Bar());
         String x1 = JSON.toJSONString(new Bar(), true);
         System.out.println(x1);

@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
+import java.net.SocketTimeoutException;
 import java.nio.charset.Charset;
 
 /**
@@ -14,7 +15,8 @@ import java.nio.charset.Charset;
  */
 public final class EchoJdkUdpClient {
     public static final Logger utilLogger = LoggerFactory.getLogger("util");
-    public static void main(String[] args) throws  Exception{
+    @org.junit.Test
+    public void legacyMain() throws  Exception {
         final String data = "博主邮箱:zou90512@126.com";
         byte[] bytes = data.getBytes(Charset.forName("UTF-8"));
         InetSocketAddress targetHost = new InetSocketAddress("127.0.0.1", 9999);
@@ -23,18 +25,16 @@ public final class EchoJdkUdpClient {
         DatagramSocket socket = new DatagramSocket();
         socket.send(new DatagramPacket(bytes, 0, bytes.length, targetHost));
 
-        while (true) {
-            //接收数据报的包
+        socket.setSoTimeout(5000);
+        try {
             DatagramPacket packet = new DatagramPacket(bytes, bytes.length);
-//            DatagramSocket localUDPSocket = LocalUDPSocketProvider.getInstance().getLocalUDPSocket();
-//            if (localUDPSocket == null || (localUDPSocket.isClosed())) {
-//                continue;
-//            }
-
             socket.receive(packet);
-            //解析发来的数据
             String response = new String(packet.getData(), 0, packet.getLength(), CharsetUtil.UTF_8);
             utilLogger.debug("收到服务器信息" + response);
+        } catch (SocketTimeoutException e) {
+            utilLogger.debug("receive timeout (ok if server not running)");
+        } finally {
+            socket.close();
         }
     }
 }

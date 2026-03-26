@@ -10,23 +10,24 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  *
  */
 public final class ReadWriteLockTest {
-    public static void main(String[] args) {
+    @org.junit.Test
+    public void legacyMain() {
         final Queue3 q3 = new Queue3();
         int threadSize = 10;
         //创建几个线程
         for(int i=0;i<threadSize;i++)
         {
             new Thread(() -> {
-                while(true){
+                for (int j = 0; j < 15; j++) {
                     q3.get();
                 }
             }).start();
 
             new Thread(() -> {
-                while(true){
+                for (int j = 0; j < 15; j++) {
                     q3.put(new Random().nextInt(10000));
                     try {
-                        Thread.sleep((long) (Math.random() * 1000));
+                        Thread.sleep((long) (Math.min(50, Math.random() * 200)));
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -35,6 +36,11 @@ public final class ReadWriteLockTest {
 
         }
 
+        try {
+            Thread.sleep(2000L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
 

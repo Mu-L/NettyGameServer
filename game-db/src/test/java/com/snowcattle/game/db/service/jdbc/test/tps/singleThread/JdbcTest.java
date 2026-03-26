@@ -4,22 +4,28 @@ import com.snowcattle.game.db.service.common.uuid.SnowFlakeUUIDService;
 import com.snowcattle.game.db.service.jdbc.entity.Order;
 import com.snowcattle.game.db.service.jdbc.service.entity.impl.OrderService;
 import com.snowcattle.game.db.service.jdbc.test.TestConstants;
+import org.junit.Assert;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * Created by jiangwenping on 17/3/20.
+ * <p>
+ * {@link #legacyMain()} 仅校验容器与 Bean；批量插入压测请本机起库后调用 {@link #insertTest}。
  */
 public final class JdbcTest {
 
-    private JdbcTest() {
-    }
-
-    public static void main(String[] args) throws Exception {
-        ClassPathXmlApplicationContext classPathXmlApplicationContext = new ClassPathXmlApplicationContext(new String[]{"bean/*.xml"});
-        OrderService orderService = getOrderService(classPathXmlApplicationContext);
-        SnowFlakeUUIDService snowFlakeUUIDService = (SnowFlakeUUIDService) classPathXmlApplicationContext.getBean("snowFlakeUUIDService");
-        snowFlakeUUIDService.setNodeId(1);
-        insertTest(classPathXmlApplicationContext, orderService, snowFlakeUUIDService);
+    @org.junit.Test
+    public void legacyMain() throws Exception {
+        ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(new String[]{"bean/*.xml"});
+        try {
+            OrderService orderService = getOrderService(ctx);
+            SnowFlakeUUIDService snowFlakeUUIDService = ctx.getBean(SnowFlakeUUIDService.class);
+            snowFlakeUUIDService.setNodeId(1);
+            Assert.assertNotNull(orderService);
+            Assert.assertNotNull(snowFlakeUUIDService);
+        } finally {
+            ctx.close();
+        }
     }
 
     public static void insertTest(ClassPathXmlApplicationContext classPathXmlApplicationContext, OrderService orderService, SnowFlakeUUIDService snowFlakeUUIDService) {

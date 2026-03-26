@@ -13,7 +13,8 @@ import java.util.List;
  */
 public class JdbcAsyncCacheTest extends JdbcCacheTest{
 
-    public static void main(String[] args) throws Exception {
+    @org.junit.Test
+    public void legacyMain() throws Exception  {
         ClassPathXmlApplicationContext classPathXmlApplicationContext = new ClassPathXmlApplicationContext(new String[]{"bean/*.xml"});
 
         MoreOrderService orderService = getMoreOrderProxyService(classPathXmlApplicationContext);

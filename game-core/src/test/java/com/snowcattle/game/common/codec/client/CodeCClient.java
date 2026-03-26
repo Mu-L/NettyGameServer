@@ -16,7 +16,8 @@ import io.netty.handler.logging.LoggingHandler;
 public class CodeCClient {
 
 
-    public static void main(String[] args) throws Exception {
+    @org.junit.Test
+    public void legacyMain() throws Exception  {
         new CodeCClient().connect("127.0.0.1", 9999);
 //        new EchoClient().connect("127.0.0.1", 7090);
     }

@@ -67,8 +67,9 @@ public class EntityServiceProxy<T extends EntityService>  implements MethodInter
                         if (abstractEntity instanceof RedisInterface) {
                             RedisInterface redisInterface = (RedisInterface) abstractEntity;
                             result = redisService.getObjectFromHash(EntityUtils.getRedisKey(redisInterface), abstractEntity.getClass());
-                        } else {
-                            proxyLogger.error("query interface RedisListInterface " + abstractEntity.getClass().getSimpleName() + " use RedisInterface " + abstractEntity.toString());
+                        } else if (proxyLogger.isDebugEnabled()) {
+                            // Entity does not support single-object Redis cache, fallback to DB query.
+                            proxyLogger.debug("skip redis object cache for {}, fallback to db query", abstractEntity.getClass().getSimpleName());
                         }
                     }
                     if (result == null) {
@@ -88,8 +89,9 @@ public class EntityServiceProxy<T extends EntityService>  implements MethodInter
                             if(result != null){
                                 result = filterEntity((List<IEntity>) result, abstractEntity);
                             }
-                        } else {
-                            proxyLogger.error("query interface RedisInterface " + abstractEntity.getClass().getSimpleName() + " use RedisListInterface " + abstractEntity.toString());
+                        } else if (proxyLogger.isDebugEnabled()) {
+                            // Entity does not support list Redis cache, fallback to DB query.
+                            proxyLogger.debug("skip redis list cache for {}, fallback to db query", abstractEntity.getClass().getSimpleName());
                         }
                     }
                     if (result == null) {

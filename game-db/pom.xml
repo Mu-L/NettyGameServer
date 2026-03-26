@@ -63,9 +63,16 @@
       <groupId>org.mybatis</groupId>
       <artifactId>mybatis-spring</artifactId>
     </dependency>
+    <!-- mybatis3/sqlMapConfig.xml 中 lazyLoadingEnabled=true 需要 CGLIB -->
+    <dependency>
+      <groupId>cglib</groupId>
+      <artifactId>cglib</artifactId>
+    </dependency>
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
+      <version>${mysql.version}</version>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.alibaba</groupId>

@@ -12,7 +12,8 @@ public final class QueuePoolExecutorTest {
     private QueuePoolExecutorTest() {
     }
 
-    public static void main(String[] args) {
+    @org.junit.Test
+    public void legacyMain() {
         testOrder();
 //        testNoOrder();
     }

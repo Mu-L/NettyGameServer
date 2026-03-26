@@ -15,7 +15,8 @@ import io.netty.handler.logging.LoggingHandler;
 public final class CodeServer {
     public static  final int Port = 9999;
 
-    public static void main(String[] args) {
+    @org.junit.Test
+    public void legacyMain() {
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup();
 

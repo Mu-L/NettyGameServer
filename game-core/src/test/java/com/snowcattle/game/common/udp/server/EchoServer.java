@@ -15,7 +15,8 @@ import io.netty.handler.logging.LoggingHandler;
  * Created by jwp on 2017/1/20.
  */
 public final class EchoServer {
-    public static void main(String[] args) throws Exception {
+    @org.junit.Test
+    public void legacyMain() throws Exception  {
 //        LocalSpringServiceManager localSpringServiceManager = new LocalSpringServiceManager();
 //        MessageCommandFactory messageCommandFactory = new MessageCommandFactory();
 //        localSpringBeanManager.setMessageCommandFactory(messageCommandFactory);
