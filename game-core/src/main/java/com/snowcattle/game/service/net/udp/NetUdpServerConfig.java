@@ -23,7 +23,7 @@ public class NetUdpServerConfig{
     public void init() throws Exception {
         URL url =  FileUtil.getConfigURL(GlobalConstants.ConfigFile.UDP_SERVER_CONFIG);
         if(url != null) {
-            Element rootElement = JdomUtils.getRootElemet(url.getFile());
+            Element rootElement = JdomUtils.getRootElemet(url);
             Element element = rootElement.getChild("server");
             sdUdpServerConfig = new SdUdpServerConfig();
             sdUdpServerConfig.load(element);

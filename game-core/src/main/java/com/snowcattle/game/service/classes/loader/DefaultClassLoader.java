@@ -53,15 +53,29 @@ public class DefaultClassLoader implements IService {
         logger.info("class load DefaultClassLoader " + loadurl.getPath() + "  load class " + name);
 
         URLConnection tmpURLConnection = loadurl.openConnection();
-        FileClassLoader defaultFileClassLoader = null;
         if(tmpURLConnection instanceof JarURLConnection){
             jarLoad = true;
             logger.info("class load jarFlag " + jarLoad);
-        }
 
-        URL url = DefaultClassLoader.class.getResource("/");
-        logger.info("DefaultClassLoader root path " + url.getPath());
-        fileClassLoader = new FileClassLoader(new File(url.getPath()));
+            JarFile jar = ((JarURLConnection) tmpURLConnection).getJarFile();
+            String jarName = jar.getName();
+            // jarName 可能形如: file:/.../game-core.jar!/BOOT-INF/classes!
+            // 兜底：只要出现第一个 '!'，就认为后面是 jar 内部路径。
+            int exclamationIdx = jarName.indexOf('!');
+            if (exclamationIdx >= 0) {
+                jarName = jarName.substring(0, exclamationIdx);
+            }
+            if (jarName.startsWith("file:")) {
+                fileClassLoader = new FileClassLoader(new File(java.net.URI.create(jarName).getPath()));
+            } else {
+                fileClassLoader = new FileClassLoader(new File(jarName));
+            }
+        }
+        if(fileClassLoader == null){
+            URL url = DefaultClassLoader.class.getResource("/");
+            logger.info("DefaultClassLoader root path " + url.getPath());
+            fileClassLoader = new FileClassLoader(new File(url.getPath()));
+        }
 
         dynamicGameClassLoader = new DynamicGameClassLoader();
     }
@@ -99,9 +113,26 @@ public class DefaultClassLoader implements IService {
     }
 
     public synchronized void resetClassLoader() throws Exception{
-        URL url = DefaultClassLoader.class.getResource("/");
-        logger.info("DefaultClassLoader reset root path " + url.getPath());
-        fileClassLoader = new FileClassLoader(new File(url.getPath()));
+        String name = DefaultClassLoader.class.getName().replace('.', '/') + ".class";
+        URL loadurl = DefaultClassLoader.class.getResource('/' + name);
+        URLConnection tmpURLConnection = loadurl.openConnection();
+        if(tmpURLConnection instanceof JarURLConnection){
+            JarFile jar = ((JarURLConnection) tmpURLConnection).getJarFile();
+            String jarName = jar.getName();
+            int exclamationIdx = jarName.indexOf('!');
+            if (exclamationIdx >= 0) {
+                jarName = jarName.substring(0, exclamationIdx);
+            }
+            if (jarName.startsWith("file:")) {
+                fileClassLoader = new FileClassLoader(new File(java.net.URI.create(jarName).getPath()));
+            } else {
+                fileClassLoader = new FileClassLoader(new File(jarName));
+            }
+        }else{
+            URL url = DefaultClassLoader.class.getResource("/");
+            logger.info("DefaultClassLoader reset root path " + url.getPath());
+            fileClassLoader = new FileClassLoader(new File(url.getPath()));
+        }
     }
 
     public void setClassLoader(FileClassLoader fileClassLoader) throws Exception{

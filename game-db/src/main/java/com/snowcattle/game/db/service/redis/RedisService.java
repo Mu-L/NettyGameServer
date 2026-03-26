@@ -10,6 +10,7 @@ import com.snowcattle.game.db.entity.IEntity;
 import com.snowcattle.game.db.util.*;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -27,6 +28,14 @@ import java.util.Map.Entry;
 public class RedisService{
 
 	protected static Logger logger = Loggers.dbLogger;
+	private static final long REDIS_RETRY_INTERVAL_MS = 30_000L;
+	private volatile long redisRetryAtMs = 0L;
+	@Value("${game.redis.host:127.0.0.1}")
+	private String redisHost;
+	@Value("${game.redis.port:6379}")
+	private int redisPort;
+	@Value("${game.redis.timeout-ms:3000}")
+	private int redisTimeoutMs;
 	/*
 	 * 数据源
 	 */
@@ -53,12 +62,13 @@ public class RedisService{
 	 * 释放错误链接
 	 */
 	private void returnBrokenResource(Jedis jedis,String name,Exception msge){
-		logger.error(TimeUtils.dateToString(new Date())+":::::"+name+":::::"+msge.getMessage(), msge);
+		// Redis 不可用时降级为 DB-only，避免 ERROR 级别日志刷屏影响启动观察
+		logger.warn(TimeUtils.dateToString(new Date())+":::::"+name+":::::"+buildExceptionChain(msge));
 		if (jedis != null) {
 			try {
 				jedisPool.returnBrokenResource(jedis);
 			} catch (Exception e) {
-				logger.error(e.toString(), e);
+				logger.warn(e.toString());
 			}
 		}
 	}
@@ -98,6 +108,22 @@ public class RedisService{
 	 * @param seconds
 	 */
 	public boolean setObjectToHash(String key,IEntity entity,int seconds){
+		if (isRedisBackoffActive()) {
+			return false;
+		}
+		if (doSetObjectToHash(key, entity, seconds)) {
+			return true;
+		}
+		// 首次失败时立即重试一次，避免连接池短暂抖动导致整轮缓存写入丢失。
+		if (doSetObjectToHash(key, entity, seconds)) {
+			redisRetryAtMs = 0L;
+			return true;
+		}
+		redisRetryAtMs = System.currentTimeMillis() + REDIS_RETRY_INTERVAL_MS;
+		return false;
+	}
+
+	private boolean doSetObjectToHash(String key, IEntity entity, int seconds) {
 		Jedis jedis = null;
 		boolean sucess = true;
 		try{
@@ -109,13 +135,61 @@ public class RedisService{
 			}
 		}catch (Exception e) {
 			sucess = false;
-			returnBrokenResource(jedis, "setObjectToHash:"+key, e);
+			// 连接池获取失败时尝试直连一次，避免池状态抖动导致缓存完全不可用。
+			boolean directSuccess = directSetObjectToHash(key, entity, seconds);
+			// 仅在池与兜底都失败时才打印 WARN，避免“实际写入成功但日志报错”的误导。
+			if (!directSuccess) {
+				returnBrokenResource(jedis, "setObjectToHash:"+key, e);
+			}
+			return directSuccess;
 		}finally{
 			if (sucess && jedis != null) {
 				returnResource(jedis);
 			}
 		}
 		return sucess;
+	}
+
+	private boolean directSetObjectToHash(String key, IEntity entity, int seconds) {
+		Jedis directJedis = null;
+		try {
+			directJedis = new Jedis(redisHost, redisPort, redisTimeoutMs);
+			Map<String, String> map = EntityUtils.getCacheValueMap(entity);
+			directJedis.hmset(key, map);
+			if (seconds >= 0) {
+				directJedis.expire(key, seconds);
+			}
+			return true;
+		} catch (Exception e) {
+			return false;
+		} finally {
+			if (directJedis != null) {
+				try {
+					directJedis.close();
+				} catch (Exception ignore) {
+				}
+			}
+		}
+	}
+
+	private String buildExceptionChain(Throwable throwable) {
+		if (throwable == null) {
+			return "unknown";
+		}
+		StringBuilder sb = new StringBuilder();
+		Throwable current = throwable;
+		while (current != null) {
+			if (sb.length() > 0) {
+				sb.append(" | caused by: ");
+			}
+			sb.append(current.getClass().getName()).append(": ").append(current.getMessage());
+			current = current.getCause();
+		}
+		return sb.toString();
+	}
+
+	private boolean isRedisBackoffActive() {
+		return System.currentTimeMillis() < redisRetryAtMs;
 	}
 	/*
 	 * 更新缓存里的hash值

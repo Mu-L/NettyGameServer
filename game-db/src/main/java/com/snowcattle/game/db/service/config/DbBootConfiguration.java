@@ -12,7 +12,10 @@ import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.Scope;
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -20,43 +23,24 @@ import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
 import javax.sql.DataSource;
+import java.io.InputStream;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Configuration
 @EnableTransactionManagement
+@PropertySource(value = "classpath:game-spring-xml-placeholder.properties", ignoreResourceNotFound = false)
 public class DbBootConfiguration {
+    private static final String DB_PLACEHOLDER_PATH = "classpath:game-spring-xml-placeholder.properties";
+    private static final Pattern DATASOURCE_URL_KEY_PATTERN = Pattern.compile("^game\\.datasource\\.([^.]+)\\.url$");
+    private final Properties fallbackProps = new Properties();
 
-    @Value("${game.datasource.driver-class-name}")
-    private String driverClassName;
-
-    @Value("${game.datasource.db0.url}")
-    private String db0Url;
-    @Value("${game.datasource.db0.username}")
-    private String db0Username;
-    @Value("${game.datasource.db0.password}")
-    private String db0Password;
-
-    @Value("${game.datasource.db1.url}")
-    private String db1Url;
-    @Value("${game.datasource.db1.username}")
-    private String db1Username;
-    @Value("${game.datasource.db1.password}")
-    private String db1Password;
-
-    @Value("${game.datasource.db2.url}")
-    private String db2Url;
-    @Value("${game.datasource.db2.username}")
-    private String db2Username;
-    @Value("${game.datasource.db2.password}")
-    private String db2Password;
-
-    @Value("${game.redis.host:127.0.0.1}")
-    private String redisHost;
-    @Value("${game.redis.port:6379}")
-    private int redisPort;
-    @Value("${game.redis.timeout-ms:3000}")
-    private int redisTimeoutMs;
+    @Value("${game.mybatis.config-location:classpath:mybatis3/sqlMapConfig.xml}")
+    private String mybatisConfigLocation;
 
     @Bean
     public DbConfig dbConfig(
@@ -78,24 +62,52 @@ public class DbBootConfiguration {
     }
 
     @Bean
-    public JedisPoolConfig poolConfig(
-            @Value("${game.redis.pool.max-idle:30}") int maxIdle,
-            @Value("${game.redis.pool.test-while-idle:true}") boolean testWhileIdle,
-            @Value("${game.redis.pool.time-between-eviction-runs-millis:60000}") long evictionRunsMillis,
-            @Value("${game.redis.pool.num-tests-per-eviction-run:30}") int testsPerEvictionRun,
-            @Value("${game.redis.pool.min-evictable-idle-time-millis:60000}") long minEvictableIdleTimeMillis) {
+    public DatasourceRegistry datasourceRegistry(@Value("${game.datasource.driver-class-name}") String driverClassName) {
+        Map<String, DbNodeProperties> nodes = loadDatasourceNodes();
+        if (nodes.isEmpty()) {
+            throw new IllegalStateException("Missing required config: game.datasource.<name>.url");
+        }
+        return new DatasourceRegistry(driverClassName, nodes);
+    }
+
+    @Bean
+    public RedisProperties redisProperties(
+            @Value("${game.redis.host:127.0.0.1}") String host,
+            @Value("${game.redis.port:6379}") int port,
+            @Value("${game.redis.timeout-ms:3000}") int timeoutMs) {
+        RedisProperties p = new RedisProperties();
+        p.setHost(host);
+        p.setPort(port);
+        p.setTimeoutMs(timeoutMs);
+        return p;
+    }
+
+    @Bean
+    public JedisPoolConfig poolConfig(RedisProperties redisProperties) {
+        RedisPoolProperties pool = redisProperties.getPool();
+        if (pool == null) {
+            pool = new RedisPoolProperties();
+        }
         JedisPoolConfig poolConfig = new JedisPoolConfig();
-        poolConfig.setMaxIdle(maxIdle);
-        poolConfig.setTestWhileIdle(testWhileIdle);
-        poolConfig.setTimeBetweenEvictionRunsMillis(evictionRunsMillis);
-        poolConfig.setNumTestsPerEvictionRun(testsPerEvictionRun);
-        poolConfig.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
+        poolConfig.setMaxTotal(pool.getMaxTotal());
+        poolConfig.setMaxIdle(pool.getMaxIdle());
+        poolConfig.setTestOnBorrow(pool.isTestOnBorrow());
+        poolConfig.setTestWhileIdle(pool.isTestWhileIdle());
+        poolConfig.setBlockWhenExhausted(pool.isBlockWhenExhausted());
+        poolConfig.setTimeBetweenEvictionRunsMillis(pool.getTimeBetweenEvictionRunsMillis());
+        poolConfig.setNumTestsPerEvictionRun(pool.getNumTestsPerEvictionRun());
+        poolConfig.setMinEvictableIdleTimeMillis(pool.getMinEvictableIdleTimeMillis());
         return poolConfig;
     }
 
     @Bean
-    public JedisPool jedisPool(JedisPoolConfig poolConfig) {
-        return new JedisPool(poolConfig, redisHost, redisPort, redisTimeoutMs);
+    public JedisPool jedisPool(JedisPoolConfig poolConfig, RedisProperties redisProperties) {
+        // 避免运行时依赖 DNS 解析；某些环境下解析 `localhost` 会失败
+        String host = redisProperties.getHost();
+        if (host == null || host.trim().isEmpty() || "localhost".equalsIgnoreCase(host.trim())) {
+            host = "127.0.0.1";
+        }
+        return new JedisPool(poolConfig, host, redisProperties.getPort(), redisProperties.getTimeoutMs());
     }
 
     @Bean(name = "rgtRedisService")
@@ -106,32 +118,24 @@ public class DbBootConfiguration {
     }
 
     @Bean
-    public DataSource jdbc_player_db0() {
-        return buildDataSource(db0Url, db0Username, db0Password);
-    }
-
-    @Bean
-    public DataSource jdbc_player_db1() {
-        return buildDataSource(db1Url, db1Username, db1Password);
-    }
-
-    @Bean
-    public DataSource jdbc_player_db2() {
-        return buildDataSource(db2Url, db2Username, db2Password);
-    }
-
-    @Bean
-    public DynamicDataSource dynamicDataSource(
-            DataSource jdbc_player_db0,
-            DataSource jdbc_player_db1,
-            DataSource jdbc_player_db2) {
+    public DynamicDataSource dynamicDataSource(DatasourceRegistry datasourceRegistry) {
         DynamicDataSource dynamicDataSource = new DynamicDataSource();
-        Map<Object, Object> targetDataSources = new HashMap<>();
-        targetDataSources.put("jdbc_player_db0", jdbc_player_db0);
-        targetDataSources.put("jdbc_player_db1", jdbc_player_db1);
-        targetDataSources.put("jdbc_player_db2", jdbc_player_db2);
+        Map<Object, Object> targetDataSources = new LinkedHashMap<>();
+        String firstKey = null;
+        for (Map.Entry<String, DbNodeProperties> entry : datasourceRegistry.getNodes().entrySet()) {
+            String dbKey = entry.getKey();
+            String dataSourceKey = "jdbc_player_" + dbKey;
+            DataSource dataSource = buildDataSource(entry.getValue(), dbKey, datasourceRegistry.getDriverClassName());
+            targetDataSources.put(dataSourceKey, dataSource);
+            if (firstKey == null) {
+                firstKey = dataSourceKey;
+            }
+        }
+        if (firstKey == null) {
+            throw new IllegalStateException("No datasource entries loaded");
+        }
         dynamicDataSource.setTargetDataSources(targetDataSources);
-        dynamicDataSource.setDefaultTargetDataSource(jdbc_player_db0);
+        dynamicDataSource.setDefaultTargetDataSource(targetDataSources.get(firstKey));
         return dynamicDataSource;
     }
 
@@ -146,6 +150,13 @@ public class DbBootConfiguration {
         sqlSessionFactoryBean.setDataSource(dynamicDataSource);
         sqlSessionFactoryBean.setTypeAliasesPackage("com.snowcattle.game.db.service.jdbc.entity");
         sqlSessionFactoryBean.setTypeHandlersPackage("com.snowcattle.game.db.service.jdbc.handler");
+        // 从 mybatis 主配置加载 mapper（含 orderMapper.xml）
+        String configLocation = mybatisConfigLocation;
+        if (configLocation == null || configLocation.trim().isEmpty()) {
+            configLocation = "classpath:mybatis3/sqlMapConfig.xml";
+        }
+        Resource configResource = new DefaultResourceLoader().getResource(configLocation);
+        sqlSessionFactoryBean.setConfigLocation(configResource);
         // 避免默认 VendorDatabaseIdProvider 在启动时 getConnection() 探测库类型（路由键未设置时会踩到空连接）
         sqlSessionFactoryBean.setDatabaseIdProvider(new StaticMysqlDatabaseIdProvider());
         return sqlSessionFactoryBean;
@@ -198,12 +209,15 @@ public class DbBootConfiguration {
         return strategy;
     }
 
-    private DataSource buildDataSource(String url, String username, String password) {
+    private DataSource buildDataSource(DbNodeProperties dbNode, String dbKey, String driverClassName) {
         BasicDataSource dataSource = new BasicDataSource();
-        dataSource.setDriverClassName(driverClassName);
-        dataSource.setUrl(url);
-        dataSource.setUsername(username);
-        dataSource.setPassword(password);
+        if (dbNode == null) {
+            throw new IllegalStateException("Missing required config: game.datasource." + dbKey);
+        }
+        dataSource.setDriverClassName(requireConfig("game.datasource.driver-class-name", driverClassName));
+        dataSource.setUrl(requireConfig("game.datasource." + dbKey + ".url", dbNode.getUrl()));
+        dataSource.setUsername(requireConfig("game.datasource." + dbKey + ".username", dbNode.getUsername()));
+        dataSource.setPassword(requireConfig("game.datasource." + dbKey + ".password", dbNode.getPassword()));
         dataSource.setMaxActive(8);
         dataSource.setMaxWait(1500);
         dataSource.setMaxIdle(2);
@@ -219,5 +233,127 @@ public class DbBootConfiguration {
         dataSource.setNumTestsPerEvictionRun(10);
         dataSource.setMinEvictableIdleTimeMillis(60000);
         return dataSource;
+    }
+
+    private String requireConfig(String key, String value) {
+        if (key == null || key.trim().isEmpty()) {
+            throw new IllegalStateException("Missing required config key name");
+        }
+        if (isBlank(value)) {
+            throw new IllegalStateException("Missing required config: " + key);
+        }
+        return value.trim();
+    }
+
+    private boolean isBlank(String text) {
+        return text == null || text.trim().isEmpty();
+    }
+
+    private Map<String, DbNodeProperties> loadDatasourceNodes() {
+        Properties props = loadFallbackProperties();
+        Map<String, DbNodeProperties> nodes = new LinkedHashMap<>();
+        for (String key : props.stringPropertyNames()) {
+            Matcher matcher = DATASOURCE_URL_KEY_PATTERN.matcher(key);
+            if (!matcher.matches()) {
+                continue;
+            }
+            String dbKey = matcher.group(1);
+            DbNodeProperties node = new DbNodeProperties();
+            node.setUrl(props.getProperty("game.datasource." + dbKey + ".url"));
+            node.setUsername(props.getProperty("game.datasource." + dbKey + ".username"));
+            node.setPassword(props.getProperty("game.datasource." + dbKey + ".password"));
+            nodes.put(dbKey, node);
+        }
+        return nodes;
+    }
+
+    private Properties loadFallbackProperties() {
+        if (!fallbackProps.isEmpty()) {
+            return fallbackProps;
+        }
+        try {
+            Resource resource = new DefaultResourceLoader().getResource(DB_PLACEHOLDER_PATH);
+            try (InputStream in = resource.getInputStream()) {
+                fallbackProps.load(in);
+            }
+            return fallbackProps;
+        } catch (Exception e) {
+            throw new IllegalStateException("Failed to load config file: " + DB_PLACEHOLDER_PATH, e);
+        }
+    }
+
+    public static class DbNodeProperties {
+        private String url;
+        private String username;
+        private String password;
+
+        public String getUrl() { return url; }
+        public void setUrl(String url) { this.url = url; }
+        public String getUsername() { return username; }
+        public void setUsername(String username) { this.username = username; }
+        public String getPassword() { return password; }
+        public void setPassword(String password) { this.password = password; }
+    }
+
+    public static class DatasourceRegistry {
+        private final String driverClassName;
+        private final Map<String, DbNodeProperties> nodes;
+
+        public DatasourceRegistry(String driverClassName, Map<String, DbNodeProperties> nodes) {
+            this.driverClassName = driverClassName;
+            this.nodes = nodes;
+        }
+
+        public String getDriverClassName() {
+            return driverClassName;
+        }
+
+        public Map<String, DbNodeProperties> getNodes() {
+            return nodes;
+        }
+    }
+
+    public static class RedisProperties {
+        private String host = "127.0.0.1";
+        private int port = 6379;
+        private int timeoutMs = 3000;
+        private RedisPoolProperties pool = new RedisPoolProperties();
+
+        public String getHost() { return host; }
+        public void setHost(String host) { this.host = host; }
+        public int getPort() { return port; }
+        public void setPort(int port) { this.port = port; }
+        public int getTimeoutMs() { return timeoutMs; }
+        public void setTimeoutMs(int timeoutMs) { this.timeoutMs = timeoutMs; }
+        public RedisPoolProperties getPool() { return pool; }
+        public void setPool(RedisPoolProperties pool) { this.pool = pool; }
+    }
+
+    public static class RedisPoolProperties {
+        private int maxTotal = 50;
+        private int maxIdle = 30;
+        private boolean testOnBorrow = true;
+        private boolean testWhileIdle = true;
+        private boolean blockWhenExhausted = true;
+        private long timeBetweenEvictionRunsMillis = 60000;
+        private int numTestsPerEvictionRun = 30;
+        private long minEvictableIdleTimeMillis = 60000;
+
+        public int getMaxTotal() { return maxTotal; }
+        public void setMaxTotal(int maxTotal) { this.maxTotal = maxTotal; }
+        public int getMaxIdle() { return maxIdle; }
+        public void setMaxIdle(int maxIdle) { this.maxIdle = maxIdle; }
+        public boolean isTestOnBorrow() { return testOnBorrow; }
+        public void setTestOnBorrow(boolean testOnBorrow) { this.testOnBorrow = testOnBorrow; }
+        public boolean isTestWhileIdle() { return testWhileIdle; }
+        public void setTestWhileIdle(boolean testWhileIdle) { this.testWhileIdle = testWhileIdle; }
+        public boolean isBlockWhenExhausted() { return blockWhenExhausted; }
+        public void setBlockWhenExhausted(boolean blockWhenExhausted) { this.blockWhenExhausted = blockWhenExhausted; }
+        public long getTimeBetweenEvictionRunsMillis() { return timeBetweenEvictionRunsMillis; }
+        public void setTimeBetweenEvictionRunsMillis(long v) { this.timeBetweenEvictionRunsMillis = v; }
+        public int getNumTestsPerEvictionRun() { return numTestsPerEvictionRun; }
+        public void setNumTestsPerEvictionRun(int numTestsPerEvictionRun) { this.numTestsPerEvictionRun = numTestsPerEvictionRun; }
+        public long getMinEvictableIdleTimeMillis() { return minEvictableIdleTimeMillis; }
+        public void setMinEvictableIdleTimeMillis(long v) { this.minEvictableIdleTimeMillis = v; }
     }
 }

@@ -21,9 +21,9 @@ public class NettyTcpSerssionUpdate extends AbstractUpdate<Long> {
     public void update() {
         nettyTcpSession.update();
         updateAlive();
-        if(Loggers.sessionLogger.isDebugEnabled()){
-            Loggers.sessionLogger.debug("update session update id " + getUpdateId());
-        }
+//        if(Loggers.sessionLogger.isDebugEnabled()){
+//            Loggers.sessionLogger.debug("update session update id " + getUpdateId());
+//        }
     }
 
     @Override

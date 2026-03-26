@@ -24,7 +24,7 @@ public class NetProxyConfig{
     public void init() throws Exception {
         URL url =  FileUtil.getConfigURL(GlobalConstants.ConfigFile.PROXY_SERVER_CONFIG);
         if(url != null) {
-            Element rootElement = JdomUtils.getRootElemet(url.getFile());
+            Element rootElement = JdomUtils.getRootElemet(url);
             Element element = rootElement.getChild("server");
             sdProxyConfig = new SdProxyConfig();
             sdProxyConfig.load(element);

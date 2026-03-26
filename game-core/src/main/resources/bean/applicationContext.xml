@@ -9,7 +9,10 @@
 						http://www.springframework.org/schema/context
 						http://www.springframework.org/schema/context/spring-context.xsd">
     <context:annotation-config />
-    <context:component-scan base-package="com.snowcattle.game" />
+    <context:component-scan base-package="com.snowcattle.game">
+        <!-- XML 容器已加载 db xml，排除 JavaConfig 防止 mapper 重复扫描 -->
+        <context:exclude-filter type="assignable" expression="com.snowcattle.game.db.service.config.DbBootConfiguration"/>
+    </context:component-scan>
     <bean class="com.snowcattle.game.common.util.BeanUtil"/>
 
 </beans>

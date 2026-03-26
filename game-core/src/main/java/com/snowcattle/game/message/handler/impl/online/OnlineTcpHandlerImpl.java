@@ -2,11 +2,13 @@ package com.snowcattle.game.message.handler.impl.online;
 
 import com.snowcattle.game.common.annotation.MessageCommandAnnotation;
 import com.snowcattle.game.common.constant.Loggers;
+import com.snowcattle.game.common.util.BeanUtil;
 import com.snowcattle.game.logic.player.GamePlayer;
 import com.snowcattle.game.bootstrap.manager.LocalMananger;
 import com.snowcattle.game.message.handler.AbstractMessageHandler;
 import com.snowcattle.game.message.logic.tcp.online.client.OnlineLoginClientTcpMessage;
 import com.snowcattle.game.message.logic.tcp.online.server.OnlineLoginServerTcpMessage;
+import com.snowcattle.game.service.order.OrderCacheDbService;
 import com.snowcattle.game.service.lookup.GamePlayerLoopUpService;
 import com.snowcattle.game.service.net.tcp.MessageAttributeEnum;
 import com.snowcattle.game.service.message.AbstractNetMessage;
@@ -32,10 +34,22 @@ public class OnlineTcpHandlerImpl extends AbstractMessageHandler {
         if (Loggers.sessionLogger.isDebugEnabled()) {
             Loggers.sessionLogger.debug( "playerId " + playerId + "tocken " + tocken + "login");
         }
-        NettyTcpSession clientSesion = (NettyTcpSession) message.getAttribute(MessageAttributeEnum.DISPATCH_SESSION);
-        GamePlayer gamePlayer = new GamePlayer(clientSesion.getNettyTcpNetMessageSender(), playerId, tocken);
+        NettyTcpSession clientSession = (NettyTcpSession) message.getAttribute(MessageAttributeEnum.DISPATCH_SESSION);
+        GamePlayer gamePlayer = new GamePlayer(clientSession.getNettyTcpNetMessageSender(), playerId, tocken);
         GamePlayerLoopUpService gamePlayerLoopUpService = LocalMananger.getInstance().getLocalSpringServiceManager().getGamePlayerLoopUpService();
         gamePlayerLoopUpService.addT(gamePlayer);
+
+        // insert order (db + redis cache)
+        try {
+            OrderCacheDbService orderCacheDbService = (OrderCacheDbService) BeanUtil.getBean("orderCacheDbService");
+             playerId = 3;
+            long orderId = System.currentTimeMillis();
+            String status = "online_login";
+            orderCacheDbService.insertOrderWithCache(playerId, orderId, status);
+        } catch (Exception e) {
+            Loggers.serverLogger.error("insert order cache failed, playerId={}", 3, e);
+        }
+
         return onlineLoginServerTcpMessage;
     }
 }

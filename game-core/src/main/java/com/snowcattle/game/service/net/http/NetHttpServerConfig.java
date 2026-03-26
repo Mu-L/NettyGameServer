@@ -24,7 +24,7 @@ public class NetHttpServerConfig{
     public void init() throws Exception {
         URL url =  FileUtil.getConfigURL(GlobalConstants.ConfigFile.HTTP_SERVER_CONFIG);
         if(url != null) {
-            Element rootElement = JdomUtils.getRootElemet(url.getFile());
+            Element rootElement = JdomUtils.getRootElemet(url);
             Element element = rootElement.getChild("server");
             sdHttpServerConfig = new SdHttpServerConfig();
             sdHttpServerConfig.load(element);

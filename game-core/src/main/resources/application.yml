@@ -1,5 +1,3 @@
 spring:
   main:
     web-application-type: none
-
-# DB 行为（分片、异步 worker、game.db.*）见 game-db 模块 application.yml

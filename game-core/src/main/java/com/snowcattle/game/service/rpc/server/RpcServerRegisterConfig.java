@@ -9,6 +9,7 @@ import org.jdom2.Element;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +33,8 @@ public class RpcServerRegisterConfig {
 
     public void init() throws Exception {
 
-        Element rootElement = JdomUtils.getRootElemet(FileUtil.getConfigURL(GlobalConstants.ConfigFile.RPC_SERVER_REGISTER_CONFIG).getFile());
+        URL rpcRegisterUrl = FileUtil.getConfigURL(GlobalConstants.ConfigFile.RPC_SERVER_REGISTER_CONFIG);
+        Element rootElement = JdomUtils.getRootElemet(rpcRegisterUrl);
 
         Map<Integer, SdServer> serverMap = new HashMap<>();
 
@@ -70,7 +72,8 @@ public class RpcServerRegisterConfig {
         }
 
         SdRpcServiceProvider sdRpcServiceProvider = new SdRpcServiceProvider();
-        rootElement = JdomUtils.getRootElemet(FileUtil.getConfigURL(GlobalConstants.ConfigFile.RPC_SERVEICE_CONFIG).getFile());
+        URL rpcServiceUrl = FileUtil.getConfigURL(GlobalConstants.ConfigFile.RPC_SERVEICE_CONFIG);
+        rootElement = JdomUtils.getRootElemet(rpcServiceUrl);
         childrenElements = rootElement.getChildren("service");
         for (Element childElement : childrenElements) {
             sdRpcServiceProvider.load(childElement);

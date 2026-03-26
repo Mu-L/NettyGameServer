@@ -114,24 +114,24 @@
     </bean>
 
     <bean id="jdbc_player_db0" parent="parent_datasource">
-        <property name="driverClassName" value="${game.datasource.driver-class-name}" />
-        <property name="url" value="${game.datasource.db0.url}" />
-        <property name="username" value="${game.datasource.db0.username}" />
-        <property name="password" value="${game.datasource.db0.password}" />
+        <property name="driverClassName" value="${game.datasource.driver-class-name:com.mysql.cj.jdbc.Driver}" />
+        <property name="url" value="${game.datasource.db0.url:jdbc:mysql://localhost:3306/db_0?useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=false&amp;allowPublicKeyRetrieval=true&amp;serverTimezone=UTC}" />
+        <property name="username" value="${game.datasource.db0.username:root}" />
+        <property name="password" value="${game.datasource.db0.password:123456}" />
     </bean>
 
     <bean id="jdbc_player_db1" parent="parent_datasource">
-        <property name="driverClassName" value="${game.datasource.driver-class-name}" />
-        <property name="url" value="${game.datasource.db1.url}" />
-        <property name="username" value="${game.datasource.db1.username}" />
-        <property name="password" value="${game.datasource.db1.password}" />
+        <property name="driverClassName" value="${game.datasource.driver-class-name:com.mysql.cj.jdbc.Driver}" />
+        <property name="url" value="${game.datasource.db1.url:jdbc:mysql://localhost:3306/db_1?useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=false&amp;allowPublicKeyRetrieval=true&amp;serverTimezone=UTC}" />
+        <property name="username" value="${game.datasource.db1.username:root}" />
+        <property name="password" value="${game.datasource.db1.password:123456}" />
     </bean>
 
     <bean id="jdbc_player_db2" parent="parent_datasource">
-        <property name="driverClassName" value="${game.datasource.driver-class-name}" />
-        <property name="url" value="${game.datasource.db2.url}" />
-        <property name="username" value="${game.datasource.db2.username}" />
-        <property name="password" value="${game.datasource.db2.password}" />
+        <property name="driverClassName" value="${game.datasource.driver-class-name:com.mysql.cj.jdbc.Driver}" />
+        <property name="url" value="${game.datasource.db2.url:jdbc:mysql://localhost:3306/db_2?useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=false&amp;allowPublicKeyRetrieval=true&amp;serverTimezone=UTC}" />
+        <property name="username" value="${game.datasource.db2.username:root}" />
+        <property name="password" value="${game.datasource.db2.password:123456}" />
     </bean>
 
     <bean id="defaultEntityServiceShardingStrategy" class="com.snowcattle.game.db.sharding.EntityServiceShardingStrategy">

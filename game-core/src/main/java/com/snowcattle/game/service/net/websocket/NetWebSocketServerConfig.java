@@ -23,7 +23,7 @@ public class NetWebSocketServerConfig extends SdNetConfig{
     public void init() throws Exception {
         URL url =  FileUtil.getConfigURL(GlobalConstants.ConfigFile.WEBSOCKET_SERVER_CONFIG);
         if(url != null) {
-            Element rootElement = JdomUtils.getRootElemet(url.getFile());
+            Element rootElement = JdomUtils.getRootElemet(url);
             Element element = rootElement.getChild("server");
             sdWebSocketServerConfig = new SdWebSocketServerConfig();
             sdWebSocketServerConfig.load(element);

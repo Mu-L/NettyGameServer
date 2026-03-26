@@ -1,5 +1,8 @@
 # game-db：数据源、Redis、DB 行为（分片、异步等）；与 game-core 的 application.yml 由 Spring Boot 合并加载
 game:
+  mybatis:
+    config-location: classpath:mybatis3/sqlMapConfig.xml
+    mapper-locations: classpath*:mybatis3/mappers/*Mapper.xml
   db:
     id: 1
     use-redis-flag: ${GAME_DB_USE_REDIS:true}

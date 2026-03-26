@@ -9,10 +9,15 @@
 						http://www.springframework.org/schema/context
 						http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <context:property-placeholder location="classpath:game-spring-xml-placeholder.properties" />
+    <!-- 引入 game-db 主资源中的数据源与 redis 定义，提供 sqlSessionTemplate 等基础 Bean -->
+    <import resource="classpath:bean/db_applicationContext_datasource.xml"/>
+    <import resource="classpath:bean/db-applicationContext-redis.xml"/>
 
     <context:annotation-config />
-    <context:component-scan base-package="com.snowcattle.game" />
+    <context:component-scan base-package="com.snowcattle.game">
+        <!-- 测试 XML 会加载 db 相关 xml，排除 JavaConfig 防止 mapper 重复扫描 -->
+        <context:exclude-filter type="assignable" expression="com.snowcattle.game.db.service.config.DbBootConfiguration"/>
+    </context:component-scan>
     <bean class="com.snowcattle.game.common.util.BeanUtil"/>
 
     <bean id="dbConfig" class="com.snowcattle.game.db.service.config.DbConfig">

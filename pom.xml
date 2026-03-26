@@ -343,7 +343,9 @@
         <configuration>
           <classesDirectory>${project.basedir}/target/classes</classesDirectory>
           <includes>
-            <include>com/**</include>
+            <!-- Spring Boot executable jar 运行依赖 src/main/resources（application.yml、*.cfg.js、*.properties 等），
+                 所以不能只打包 com/**。 -->
+            <include>**/*</include>
           </includes>
         </configuration>
       </plugin>

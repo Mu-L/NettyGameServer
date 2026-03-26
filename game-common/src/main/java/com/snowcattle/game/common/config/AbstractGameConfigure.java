@@ -7,6 +7,7 @@ import org.springframework.core.io.Resource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 /**
@@ -26,9 +27,11 @@ public abstract class AbstractGameConfigure implements GameConfigurable{
 
     public void init(){
         try {
-            configFile = resource.getFile();
             properties = new Properties();
-            properties.load(new FileInputStream(configFile));
+            // 支持 jar 内资源读取：不要依赖 resource.getFile()（jar 内路径无法当作真实文件打开）
+            try (InputStream in = resource.getInputStream()) {
+                properties.load(in);
+            }
             logger.info("加载配置文件:"+resource.getFilename()+"成功.");
         } catch (IOException e) {
             //这里需要记录日志
@@ -39,7 +42,10 @@ public abstract class AbstractGameConfigure implements GameConfigurable{
     public void reload(){
         synchronized (lock) {
             try {
-                properties.load(new FileInputStream(configFile));
+                // 不依赖 getFile()，直接重新读取 resource stream
+                try (InputStream in = resource.getInputStream()) {
+                    properties.load(in);
+                }
                 logger.info("reload配置文件:"+resource.getFilename()+"成功.");
             }catch (Exception e) {
                 logger.error("reload配置文件:"+resource.getFilename()+"失败.");

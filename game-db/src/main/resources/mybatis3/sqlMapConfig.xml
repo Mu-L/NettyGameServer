@@ -19,11 +19,10 @@
     </settings>
 
     <typeAliases>
-        <typeAlias alias="order" type="com.snowcattle.demo.entity.Order"/>
+        <typeAlias alias="order" type="com.snowcattle.game.db.service.jdbc.entity.Order"/>
     </typeAliases>
 
     <mappers>
         <mapper resource="mybatis3/mappers/orderMapper.xml"/>
     </mappers>
-
 </configuration>
