@@ -49,6 +49,7 @@ import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.websocketx.*;
 import io.netty.util.CharsetUtil;
 
+import java.lang.reflect.Field;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -146,6 +147,10 @@ public class GameWebSocketClientHandler extends SimpleChannelInboundHandler<Obje
                 loginResponseReceived = true;
             }
             parsedMessageType = netProtoBufMessage == null ? "null" : netProtoBufMessage.getClass().getSimpleName();
+            if (netProtoBufMessage != null) {
+                System.out.println("WebSocket Client parsed message class: " + netProtoBufMessage.getClass().getName());
+                System.out.println("WebSocket Client parsed message content: " + describeMessage(netProtoBufMessage));
+            }
             messageLatch.countDown();
         }
     }
@@ -169,5 +174,32 @@ public class GameWebSocketClientHandler extends SimpleChannelInboundHandler<Obje
             handshakeFuture.setFailure(cause);
         }
         ctx.close();
+    }
+
+    private static String describeMessage(Object message) {
+        StringBuilder builder = new StringBuilder("{");
+        Class<?> current = message.getClass();
+        boolean first = true;
+        while (current != null && current != Object.class) {
+            Field[] fields = current.getDeclaredFields();
+            for (Field field : fields) {
+                if (java.lang.reflect.Modifier.isStatic(field.getModifiers())) {
+                    continue;
+                }
+                if (!first) {
+                    builder.append(", ");
+                }
+                first = false;
+                try {
+                    field.setAccessible(true);
+                    builder.append(field.getName()).append("=").append(field.get(message));
+                } catch (IllegalAccessException e) {
+                    builder.append(field.getName()).append("=<inaccessible>");
+                }
+            }
+            current = current.getSuperclass();
+        }
+        builder.append("}");
+        return builder.toString();
     }
 }

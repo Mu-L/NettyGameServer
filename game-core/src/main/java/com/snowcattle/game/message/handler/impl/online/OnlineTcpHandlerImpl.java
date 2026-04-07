@@ -39,16 +39,16 @@ public class OnlineTcpHandlerImpl extends AbstractMessageHandler {
         GamePlayerLoopUpService gamePlayerLoopUpService = LocalMananger.getInstance().getLocalSpringServiceManager().getGamePlayerLoopUpService();
         gamePlayerLoopUpService.addT(gamePlayer);
 
-        // insert order (db + redis cache)
-        try {
-            OrderCacheDbService orderCacheDbService = (OrderCacheDbService) BeanUtil.getBean("orderCacheDbService");
-             playerId = 3;
-            long orderId = System.currentTimeMillis();
-            String status = "online_login";
-            orderCacheDbService.insertOrderWithCache(playerId, orderId, status);
-        } catch (Exception e) {
-            Loggers.serverLogger.error("insert order cache failed, playerId={}", 3, e);
-        }
+//        // insert order (db + redis cache)
+//        try {
+//            OrderCacheDbService orderCacheDbService = (OrderCacheDbService) BeanUtil.getBean("orderCacheDbService");
+//             playerId = 3;
+//            long orderId = System.currentTimeMillis();
+//            String status = "online_login";
+//            orderCacheDbService.insertOrderWithCache(playerId, orderId, status);
+//        } catch (Exception e) {
+//            Loggers.serverLogger.error("insert order cache failed, playerId={}", 3, e);
+//        }
 
         return onlineLoginServerTcpMessage;
     }
