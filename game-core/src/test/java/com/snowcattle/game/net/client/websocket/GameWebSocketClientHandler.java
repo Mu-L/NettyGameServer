@@ -49,10 +49,16 @@ import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.websocketx.*;
 import io.netty.util.CharsetUtil;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 public class GameWebSocketClientHandler extends SimpleChannelInboundHandler<Object> {
 
     private final WebSocketClientHandshaker handshaker;
+    private final CountDownLatch messageLatch = new CountDownLatch(1);
     private ChannelPromise handshakeFuture;
+    private volatile boolean loginResponseReceived;
+    private volatile String parsedMessageType = "";
 
     public GameWebSocketClientHandler(WebSocketClientHandshaker handshaker) {
         this.handshaker = handshaker;
@@ -60,6 +66,18 @@ public class GameWebSocketClientHandler extends SimpleChannelInboundHandler<Obje
 
     public ChannelFuture handshakeFuture() {
         return handshakeFuture;
+    }
+
+    public boolean awaitLoginResponse(long timeout, TimeUnit timeUnit) throws InterruptedException {
+        return messageLatch.await(timeout, timeUnit);
+    }
+
+    public boolean isLoginResponseReceived() {
+        return loginResponseReceived;
+    }
+
+    public String getParsedMessageType() {
+        return parsedMessageType;
     }
 
     @Override
@@ -118,16 +136,17 @@ public class GameWebSocketClientHandler extends SimpleChannelInboundHandler<Obje
                 netProtoBufMessage = netProtoBufTcpMessageDecoderFactory.praseMessage(byteBuf);
             } catch (CodecException e) {
                 e.printStackTrace();
+                messageLatch.countDown();
+                return;
             }
 
             if(netProtoBufMessage instanceof OnlineLoginServerTcpMessage){
                 OnlineLoginServerTcpMessage onlineLoginServerTcpMessage = (OnlineLoginServerTcpMessage) netProtoBufMessage;
                 System.out.println("playerId:" + onlineLoginServerTcpMessage.getPlayerId());
+                loginResponseReceived = true;
             }
-
-            //再次发送测试消息
-            Thread.sleep(1000L);
-            sendTestMessage(ctx);
+            parsedMessageType = netProtoBufMessage == null ? "null" : netProtoBufMessage.getClass().getSimpleName();
+            messageLatch.countDown();
         }
     }
 
@@ -138,12 +157,14 @@ public class GameWebSocketClientHandler extends SimpleChannelInboundHandler<Obje
         NetProtoBufTcpMessageEncoderFactory netProtoBufTcpMessageEncoderFactory = new NetProtoBufTcpMessageEncoderFactory();
         ByteBuf byteBuf = netProtoBufTcpMessageEncoderFactory.createByteBuf(onlineLoginClientTcpMessage);
 
+        System.out.println("WebSocket Client send message: " + onlineLoginClientTcpMessage.getClass().getSimpleName() + ", id=" + onlineLoginClientTcpMessage.getId());
         BinaryWebSocketFrame binaryWebSocketFrame = new BinaryWebSocketFrame(byteBuf);
         ctx.writeAndFlush(binaryWebSocketFrame);
     }
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         cause.printStackTrace();
+        messageLatch.countDown();
         if (!handshakeFuture.isDone()) {
             handshakeFuture.setFailure(cause);
         }

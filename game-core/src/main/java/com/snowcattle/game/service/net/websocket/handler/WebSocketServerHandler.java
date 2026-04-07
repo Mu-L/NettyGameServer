@@ -73,6 +73,16 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<HttpRequ
             sendHttpResponse(ctx, req, res);
             return;
         }
+        String uri = req.uri();
+        boolean validWebSocketPath = WEBSOCKET_PATH.equals(uri)
+                || uri.startsWith(WEBSOCKET_PATH + "?")
+                || uri.endsWith(WEBSOCKET_PATH)
+                || uri.contains(WEBSOCKET_PATH + "?");
+        if (!validWebSocketPath) {
+            FullHttpResponse res = new DefaultFullHttpResponse(HTTP_1_1, FORBIDDEN);
+            sendHttpResponse(ctx, req, res);
+            return;
+        }
 
         // Handshake
         WebSocketServerHandshakerFactory wsFactory = new WebSocketServerHandshakerFactory(
@@ -110,7 +120,11 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<HttpRequ
     }
 
     private static String getWebSocketLocation(HttpRequest req) {
-        String location =  req.headers().get(HttpHeaderNames.HOST) + WEBSOCKET_PATH;
+        String hostHeader = req.headers().get(HttpHeaderNames.HOST);
+        if (hostHeader == null || hostHeader.isEmpty()) {
+            hostHeader = "127.0.0.1";
+        }
+        String location = hostHeader + WEBSOCKET_PATH;
         boolean sslFlag = false;
         GameServerConfigService gameServerConfigService = LocalMananger.getInstance().getLocalSpringServiceManager().getGameServerConfigService();
         GameServerConfig gameServerConfig = gameServerConfigService.getGameServerConfig();

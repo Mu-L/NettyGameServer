@@ -12,11 +12,13 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * Created by jiangwenping on 17/4/19.
  */
 public final class TestStartUp {
+    private static ClassPathXmlApplicationContext classPathXmlApplicationContext;
+
     private TestStartUp() {
     }
 
     public static void startUpWithSpring() throws Exception {
-        ClassPathXmlApplicationContext classPathXmlApplicationContext = new ClassPathXmlApplicationContext(new String[]{"bean/*.xml"});
+        classPathXmlApplicationContext = new ClassPathXmlApplicationContext(new String[]{"bean/*.xml"});
         LocalSpringServiceManager localSpringServiceManager = (LocalSpringServiceManager) BeanUtil.getBean("localSpringServiceManager");
         LocalSpringBeanManager localSpringBeanManager = (LocalSpringBeanManager) BeanUtil.getBean("localSpringBeanManager");
         LocalSpringServicerAfterManager localSpringServicerAfterManager  = (LocalSpringServicerAfterManager) BeanUtil.getBean("localSpringServicerAfterManager");
@@ -31,6 +33,29 @@ public final class TestStartUp {
         }
         LocalMananger.getInstance().create(MessageRegistry.class, MessageRegistry.class);
         localSpringServiceManager.setMessageRegistry(LocalMananger.getInstance().get(MessageRegistry.class));
+    }
+
+    public static void stopWithSpring() {
+        try {
+            LocalSpringServicerAfterManager localSpringServicerAfterManager = LocalMananger.getInstance().getLocalSpringServicerAfterManager();
+            if (localSpringServicerAfterManager != null) {
+                localSpringServicerAfterManager.stop();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            LocalSpringServiceManager localSpringServiceManager = LocalMananger.getInstance().getLocalSpringServiceManager();
+            if (localSpringServiceManager != null) {
+                localSpringServiceManager.stop();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (classPathXmlApplicationContext != null) {
+            classPathXmlApplicationContext.close();
+            classPathXmlApplicationContext = null;
+        }
     }
 
 //    public static void startUp() throws  Exception{

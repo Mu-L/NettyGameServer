@@ -3,7 +3,6 @@ package com.snowcattle.game.service.net.websocket.handler.async;
 import com.snowcattle.game.bootstrap.manager.LocalMananger;
 import com.snowcattle.game.common.constant.Loggers;
 import com.snowcattle.game.common.exception.CodecException;
-import com.snowcattle.game.common.exception.GameHandlerException;
 import com.snowcattle.game.common.exception.NetMessageException;
 import com.snowcattle.game.executor.event.EventParam;
 import com.snowcattle.game.logic.net.NetMessageProcessLogic;
@@ -11,10 +10,8 @@ import com.snowcattle.game.service.event.GameAsyncEventService;
 import com.snowcattle.game.service.event.impl.SessionRegisterEvent;
 import com.snowcattle.game.service.event.impl.SessionUnRegisterEvent;
 import com.snowcattle.game.service.lookup.NetTcpSessionLoopUpService;
-import com.snowcattle.game.service.message.AbstractNetMessage;
 import com.snowcattle.game.service.message.AbstractNetProtoBufMessage;
 import com.snowcattle.game.service.message.decoder.NetProtoBufTcpMessageDecoderFactory;
-import com.snowcattle.game.service.message.factory.TcpMessageFactory;
 import com.snowcattle.game.service.net.tcp.MessageAttributeEnum;
 import com.snowcattle.game.service.net.tcp.session.NettyTcpSession;
 import com.snowcattle.game.service.net.tcp.session.builder.NettyTcpSessionBuilder;
@@ -41,10 +38,7 @@ public class AsyncWebSocketFrameServerHandler extends SimpleChannelInboundHandle
         NetTcpSessionLoopUpService netTcpSessionLoopUpService = LocalMananger.getInstance().getLocalSpringServiceManager().getNetTcpSessionLoopUpService();
         boolean flag = netTcpSessionLoopUpService.addNettySession(nettyTcpSession);
         if (!flag) {
-            //被限制不能加入
-            TcpMessageFactory messageFactory = LocalMananger.getInstance().getLocalSpringBeanManager().getTcpMessageFactory();
-            AbstractNetMessage abstractNetMessage = messageFactory.createCommonErrorResponseMessage(-1, GameHandlerException.COMMON_ERROR_MAX_CONNECT_TCP_SESSION_NUMBER);
-            nettyTcpSession.write(abstractNetMessage);
+            // websocket pipeline does not have tcp message encoder, close directly.
             nettyTcpSession.close();
             ctx.close();
             return;
@@ -75,8 +69,12 @@ public class AsyncWebSocketFrameServerHandler extends SimpleChannelInboundHandle
         // Check for closing frame
         if (frame instanceof CloseWebSocketFrame) {
             WebSocketServerHandler webSocketServerHandler = (WebSocketServerHandler) ctx.pipeline().get("webSocketServerHandler");
-            WebSocketServerHandshaker handshaker = webSocketServerHandler.getHandshaker();
-            handshaker.close(ctx.channel(), (CloseWebSocketFrame) frame.retain());
+            WebSocketServerHandshaker handshaker = webSocketServerHandler == null ? null : webSocketServerHandler.getHandshaker();
+            if (handshaker != null) {
+                handshaker.close(ctx.channel(), (CloseWebSocketFrame) frame.retain());
+            } else {
+                ctx.close();
+            }
             return;
         }
         if (frame instanceof PingWebSocketFrame) {
@@ -105,6 +103,11 @@ public class AsyncWebSocketFrameServerHandler extends SimpleChannelInboundHandle
             } catch (CodecException e) {
                 e.printStackTrace();
             }
+            if (netMessage == null) {
+                logger.warn("websocket binary frame decode failed, channelId:{}", ctx.channel().id().asLongText());
+                return;
+            }
+            logger.info("websocket server receive message, type:{}, channelId:{}", netMessage.getClass().getSimpleName(), ctx.channel().id().asLongText());
 
 //            binaryWebSocketFrame.release();
 
@@ -124,6 +127,7 @@ public class AsyncWebSocketFrameServerHandler extends SimpleChannelInboundHandle
             //进行处理
             NetMessageProcessLogic netMessageProcessLogic = LocalMananger.getInstance().getLocalSpringBeanManager().getNetMessageProcessLogic();
             netMessageProcessLogic.processWebSocketMessage(netMessage, ctx.channel());
+            logger.info("websocket server processed message, type:{}, channelId:{}", netMessage.getClass().getSimpleName(), ctx.channel().id().asLongText());
 
         }
     }
