@@ -5,6 +5,7 @@ NettyGameServer
 - 使用game-executor工程,增加游戏内的异步事件全局服务,支持事件sharding,均衡的异步执行事件逻辑
 - 使用netty的proxy模式，增加网关代理转发
 - master-spring-boot 分支支持spring boot
+- [增加cocos creator网络链接示例工程](https://github.com/jwpttcg66/nettygameserver-cocosclient)
 ## [Wiki/文档](https://github.com/jwpttcg66/NettyGameServer/wiki)
 
 ## 源码工具链接
